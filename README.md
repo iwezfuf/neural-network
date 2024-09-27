@@ -1,4 +1,4 @@
-put your UČOs (and names) on this line (no exact format required)
+536686 Martin Dražkovec, 536633 Peter Dražkovec
 ## PV021 project -- Deep Learning from Scratch
 
 ### DEADLINE
