@@ -2,6 +2,7 @@
 #define NEURAL_NETWORK_MATRIX_H
 
 #include <vector>
+#include <functional>
 
 struct matrix {
     int rows;
@@ -16,5 +17,7 @@ public:
 };
 
 void vec_mul_scalar(std::vector<float> vec, float scalar);
+
+void vec_apply(std::vector<float> vec, std::function<float(float)> func);
 
 #endif //NEURAL_NETWORK_MATRIX_H
