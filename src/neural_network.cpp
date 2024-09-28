@@ -7,8 +7,8 @@
 neural_network::neural_network(std::vector<int> sizes,
                                std::vector<std::function<void(std::vector<float>&)>> activations,
                                std::vector<std::function<void(std::vector<float>&)>> activations_derivatives) {
-    for (size_t i = 0; i < sizes.size() - 1; i++) {
-        layers.push_back(layer(sizes[i], sizes[i + 1], activations[i], activations_derivatives[i]));
+    for (size_t i = 1; i < sizes.size(); i++) {
+        layers.push_back(layer(sizes[i], sizes[i - 1], activations[i - 1], activations_derivatives[i - 1]));
     }
 }
 
@@ -22,6 +22,11 @@ std::vector<float> neural_network:: forward(std::vector<float> input) {
 
 int neural_network:: predict(std::vector<float> input) {
     std::vector<float> result = forward(input);
+//    std::cout << "Result: " << std::endl;
+//    for (auto& val : result) {
+//        std::cout << val << " ";
+//    }
+//    std::cout << std::endl;
     int max_index = 0;
     for (size_t i = 0; i < result.size(); i++) {
         if (result[i] > result[max_index]) {
@@ -44,14 +49,14 @@ void neural_network::backward(std::vector<float> predicted, std::vector<float> l
             }
         } else {
             layer.activation_derivative(*layers[i+1].potential);
-            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i+1].potential)}) * *layer.weights).data[0];
+            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i+1].potential)}) * layer.weights->transposed()).data[0];
         }
 
-        std::cout << "de_dy: " << std::endl;
-        for (auto& val : de_dy) {
-            std::cout << val << " ";
-        }
-        std::cout << std::endl;
+//        std::cout << "de_dy: " << std::endl;
+//        for (auto& val : de_dy) {
+//            std::cout << val << " ";
+//        }
+//        std::cout << std::endl;
 
         // compute de_dp - potential
         std::vector<float> de_dp = vec_elementwise_mul(de_dy, *layer.potential);
@@ -59,11 +64,11 @@ void neural_network::backward(std::vector<float> predicted, std::vector<float> l
         for (int j = 0; j < layer.weights->rows; j++) {
             for (int k = 0; k < layer.weights->cols; k++) {
                 if (k == layer.weights->cols - 1) {
-                    std::cout << "decrementing by: " << learning_rate * de_dp[j] << std::endl;
+//                    std::cout << "decrementing by: " << learning_rate * de_dp[j] << std::endl;
                     layer.weights->data[j][k] -= learning_rate * de_dp[j];
                 } else {
                     if (i == 0) {
-                        std::cout << "decrementing by: " << learning_rate * de_dp[j] * input[k] << std::endl;
+//                        std::cout << "decrementing by: " << learning_rate * de_dp[j] * input[k] << std::endl;
                         layer.weights->data[j][k] -= learning_rate * de_dp[j] * input[k];
                     } else {
                         layer.weights->data[j][k] -= learning_rate * de_dp[j] * layers[i - 1].values->at(k);

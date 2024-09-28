@@ -15,11 +15,13 @@ public:
 
     std::vector<float> operator*(std::vector<float> vec);
 
-    void operator-=(matrix other);
-
     matrix operator*(matrix other);
 
+    void operator-=(matrix other);
+
     void randomize();
+
+    matrix transposed();
 };
 
 void vec_mul_scalar(std::vector<float> vec, float scalar);

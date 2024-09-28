@@ -61,6 +61,19 @@ void matrix::randomize() {
     }
 }
 
+matrix matrix::transposed() {
+    matrix result(cols, rows);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            result.data[j][i] = data[i][j];
+        }
+    }
+    // remove last row
+    result.data.pop_back();
+    // TODO
+    return result;
+}
+
 
 void vec_mul_scalar(std::vector<float> vec, float scalar) {
     for (size_t i = 0; i < vec.size(); i++) {
