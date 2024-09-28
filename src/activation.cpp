@@ -1,30 +1,34 @@
 #include "activation.h"
 #include <cmath>
 
-double relu(float x) {
+#include "matrix.h"
+
+float relu_single(float x) {
     return x > 0 ? x : 0;
 }
 
-double relu_derivative(float x) {
+void relu(std::vector<float>& x) {
+    vec_apply(x, relu_single);
+}
+
+float relu_derivative_single(float x) {
     return x > 0 ? 1 : 0;
 }
 
-double sigmoid(float x) {
-    return 1 / (1 + pow(M_E, -x));
+void relu_derivative(std::vector<float>& x) {
+    vec_apply(x, relu_derivative_single);
 }
 
-double sigmoid_derivative(float x) {
-    return sigmoid(x) * (1 - sigmoid(x));
-}
-
-std::vector<float> softmax(const std::vector<float>& x) {
-    std::vector<float> result;
+void softmax(std::vector<float>& x) {
     float sum = 0;
-    for (float i : x) {
-        sum += pow(M_E, i);
+    for (size_t i = 0; i < x.size(); i++) {
+        sum += exp(x[i]);
     }
-    for (float i : x) {
-        result.push_back(pow(M_E, i) / sum);
+    for (size_t i = 0; i < x.size(); i++) {
+        x[i] = exp(x[i]) / sum;
     }
-    return result;
+}
+
+void softmax_derivative(std::vector<float>&) {
+    // TODO
 }

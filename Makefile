@@ -4,10 +4,10 @@
 CXX = g++
 
 # Flags for the compiler
-CXXFLAGS = -Wall -Wextra -std=c++20
+CXXFLAGS = -Wall -Wextra -g -std=c++20
 
 # Get all .cpp files in the current directory
-SRC = $(wildcard *.cpp)
+SRC = $(wildcard src/*.cpp)
 
 # Output executable
 TARGET = main

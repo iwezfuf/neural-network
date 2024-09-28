@@ -3,14 +3,14 @@
 
 #include <vector>
 
-double relu(float x);
-double relu_derivative(float x);
+void relu(std::vector<float>& x);
+void relu_derivative(std::vector<float>& x);
 
-double sigmoid(float x);
-double sigmoid_derivative(float x);
+void sigmoid(const std::vector<float>& x);
+void sigmoid_derivative(std::vector<float>& x);;
 
-std::vector<float> softmax(const std::vector<float>& x);
-std::vector<float> softmax_derivative(const std::vector<float>& x);
+void softmax(std::vector<float>& x);
+void softmax_derivative(std::vector<float>& x);
 
 
 #endif //NEURAL_NETWORK_ACTIVATION_H
