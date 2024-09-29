@@ -49,15 +49,10 @@ void neural_network::backward(std::vector<double> predicted, std::vector<double>
                 de_dy[j] = predicted[j] - label[j];
             }
         } else {
-            auto second = *layers[i+1].potential_der;
-            auto mulled = vec_elementwise_mul(de_dy, second);
-            auto third = layers[i + 1].weights->without_last_col();
-            auto result = (matrix({mulled}) * layers[i + 1].weights->without_last_col());
-
             de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i + 1].potential_der)}) * layers[i + 1].weights->without_last_col()).data[0];
         }
 
-        // compute de_dp - dedy * potential (elementwise_mul)
+        // compute de_dp - de_dy * potential (elementwise_mul)
         std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
@@ -87,6 +82,10 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
 
     for (int i = 0; i < epochs; i++) {
         for (int j = 0; j < inputs.rows; j++) {
+            if (j > 0 && j % 100 == 0) {
+                std::cout << "Example number: " << j << std::endl;
+            }
+            if (j > 10000) break;
             std::vector<double> input = inputs.data[j];
             std::vector<double> label(layers.back().size, 0);
             label[labels[j]] = 1;
@@ -94,7 +93,7 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
             std::vector<double> predicted = forward(input);
             backward(predicted, label, learning_rate, input);
         }
-//        std::cout << "Epoch: " << i << " Loss: " << std::endl;
+        std::cout << "Epoch: " << i << " Loss: " << std::endl;
 //        visualize();
     }
 }
