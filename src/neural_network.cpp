@@ -49,26 +49,24 @@ void neural_network::backward(std::vector<float> predicted, std::vector<float> l
             }
         } else {
             layer.activation_derivative(*layers[i+1].potential);
-            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i+1].potential)}) * layer.weights->transposed()).data[0];
+
+            auto second = *layers[i+1].potential;
+            auto mulled = vec_elementwise_mul(de_dy, second);
+            auto third = layer.weights->without_last_col();
+            auto result = (matrix({mulled}) * layers[i + 1].weights->without_last_col());
+
+            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i + 1].potential)}) * layers[i + 1].weights->without_last_col()).data[0];
         }
 
-//        std::cout << "de_dy: " << std::endl;
-//        for (auto& val : de_dy) {
-//            std::cout << val << " ";
-//        }
-//        std::cout << std::endl;
-
-        // compute de_dp - potential
+        // compute de_dp - dedy * potential (elementwise_mul)
         std::vector<float> de_dp = vec_elementwise_mul(de_dy, *layer.potential);
         // compute de_dw
         for (int j = 0; j < layer.weights->rows; j++) {
             for (int k = 0; k < layer.weights->cols; k++) {
                 if (k == layer.weights->cols - 1) {
-//                    std::cout << "decrementing by: " << learning_rate * de_dp[j] << std::endl;
                     layer.weights->data[j][k] -= learning_rate * de_dp[j];
                 } else {
                     if (i == 0) {
-//                        std::cout << "decrementing by: " << learning_rate * de_dp[j] * input[k] << std::endl;
                         layer.weights->data[j][k] -= learning_rate * de_dp[j] * input[k];
                     } else {
                         layer.weights->data[j][k] -= learning_rate * de_dp[j] * layers[i - 1].values->at(k);

@@ -22,6 +22,8 @@ public:
     void randomize();
 
     matrix transposed();
+
+    matrix without_last_col();
 };
 
 void vec_mul_scalar(std::vector<float> vec, float scalar);

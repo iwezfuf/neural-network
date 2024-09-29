@@ -1,5 +1,6 @@
 #include <vector>
 #include <functional>
+#include <cassert>
 
 #include "matrix.h"
 
@@ -68,9 +69,16 @@ matrix matrix::transposed() {
             result.data[j][i] = data[i][j];
         }
     }
-    // remove last row
-    result.data.pop_back();
-    // TODO
+    return result;
+}
+
+matrix matrix::without_last_col() {
+    matrix result(rows, cols - 1);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols - 1; j++) {
+            result.data[i][j] = data[i][j];
+        }
+    }
     return result;
 }
 
@@ -88,6 +96,7 @@ void vec_apply(std::vector<float> vec, std::function<float(float)> func) {
 }
 
 std::vector<float> vec_elementwise_mul(std::vector<float>& vec1, std::vector<float>& vec2) {
+    assert(vec1.size() == vec2.size());
     std::vector<float> result;
     for (size_t i = 0; i < vec1.size(); i++) {
         result.push_back(vec1[i] * vec2[i]);

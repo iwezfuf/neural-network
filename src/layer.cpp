@@ -21,8 +21,8 @@ layer::layer(int size, int size_incoming, std::function<void(std::vector<float>&
 std::vector<float> layer:: forward(std::vector<float> input) {
     input.push_back(1);
     std::vector<float> result = (*weights) * input;
-    values = std::make_unique<std::vector<float>>(result);
-    activation(result);
     potential = std::make_unique<std::vector<float>>(result);
+    activation(result);
+    values = std::make_unique<std::vector<float>>(result);
     return result;
 }
