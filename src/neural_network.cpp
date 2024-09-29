@@ -5,23 +5,23 @@
 #include "layer.h"
 
 neural_network::neural_network(std::vector<int> sizes,
-                               std::vector<std::function<void(std::vector<float>&)>> activations,
-                               std::vector<std::function<void(std::vector<float>&)>> activations_derivatives) {
+                               std::vector<std::function<void(std::vector<double>&)>> activations,
+                               std::vector<std::function<void(std::vector<double>&)>> activations_derivatives) {
     for (size_t i = 1; i < sizes.size(); i++) {
         layers.push_back(layer(sizes[i], sizes[i - 1], activations[i - 1], activations_derivatives[i - 1]));
     }
 }
 
-std::vector<float> neural_network:: forward(std::vector<float> input) {
-    std::vector<float> result = input;
+std::vector<double> neural_network:: forward(std::vector<double> input) {
+    std::vector<double> result = input;
     for (auto& layer : layers) {
         result = layer.forward(result);
     }
     return result;
 }
 
-int neural_network:: predict(std::vector<float> input) {
-    std::vector<float> result = forward(input);
+int neural_network:: predict(std::vector<double> input) {
+    std::vector<double> result = forward(input);
 //    std::cout << "Result: " << std::endl;
 //    for (auto& val : result) {
 //        std::cout << val << " ";
@@ -36,8 +36,9 @@ int neural_network:: predict(std::vector<float> input) {
     return max_index;
 }
 
-void neural_network::backward(std::vector<float> predicted, std::vector<float> label, float learning_rate, std::vector<float> input) {
-    std::vector<float> de_dy(predicted.size());
+void neural_network::backward(std::vector<double> predicted, std::vector<double> label, double learning_rate, std::vector<double> input) {
+    std::vector<double> de_dy(predicted.size());
+    matrix weight_delta = matrix(0, 0);
 
     for (int i = layers.size() - 1; i >= 0; i--) {
         auto& layer = layers[i];
@@ -48,51 +49,53 @@ void neural_network::backward(std::vector<float> predicted, std::vector<float> l
                 de_dy[j] = predicted[j] - label[j];
             }
         } else {
-            layer.activation_derivative(*layers[i+1].potential);
-
-            auto second = *layers[i+1].potential;
+            auto second = *layers[i+1].potential_der;
             auto mulled = vec_elementwise_mul(de_dy, second);
-            auto third = layer.weights->without_last_col();
+            auto third = layers[i + 1].weights->without_last_col();
             auto result = (matrix({mulled}) * layers[i + 1].weights->without_last_col());
 
-            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i + 1].potential)}) * layers[i + 1].weights->without_last_col()).data[0];
+            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i + 1].potential_der)}) * layers[i + 1].weights->without_last_col()).data[0];
         }
 
         // compute de_dp - dedy * potential (elementwise_mul)
-        std::vector<float> de_dp = vec_elementwise_mul(de_dy, *layer.potential);
+        std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
+
+        if (static_cast<size_t>(i) != layers.size() - 1) {
+            layers[i + 1].weights.get()->substract(weight_delta * learning_rate);
+        }
+
         // compute de_dw
-        for (int j = 0; j < layer.weights->rows; j++) {
-            for (int k = 0; k < layer.weights->cols; k++) {
-                if (k == layer.weights->cols - 1) {
-                    layer.weights->data[j][k] -= learning_rate * de_dp[j];
-                } else {
-                    if (i == 0) {
-                        layer.weights->data[j][k] -= learning_rate * de_dp[j] * input[k];
-                    } else {
-                        layer.weights->data[j][k] -= learning_rate * de_dp[j] * layers[i - 1].values->at(k);
-                    }
-                }
-            }
+        std::vector<double> *y_vector;
+        if (i == 0) {
+            y_vector = &input;
+        } else {
+            y_vector = layers[i - 1].values.get();
+        }
+        y_vector->push_back(1);
+        weight_delta = outer_product(de_dp,*y_vector);
+
+        if (i == 0) {
+            layer.weights.get()->substract(weight_delta * learning_rate);
         }
     }
 }
 
-void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, float learning_rate) {
-    std::cout << "BEFORE" << std::endl;
-    visualize();
-    std::cout << "BEFORE" << std::endl;
+void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate) {
+//    std::cout << "BEFORE" << std::endl;
+//    visualize();
+//    std::cout << "BEFORE" << std::endl;
 
     for (int i = 0; i < epochs; i++) {
         for (int j = 0; j < inputs.rows; j++) {
-            std::vector<float> input = inputs.data[j];
-            std::vector<float> label(layers.back().size, 0);
+            std::vector<double> input = inputs.data[j];
+            std::vector<double> label(layers.back().size, 0);
             label[labels[j]] = 1;
 
-            std::vector<float> predicted = forward(input);
+            std::vector<double> predicted = forward(input);
             backward(predicted, label, learning_rate, input);
         }
-        std::cout << "Epoch: " << i << " Loss: " << std::endl;
-        visualize();
+//        std::cout << "Epoch: " << i << " Loss: " << std::endl;
+//        visualize();
     }
 }
 

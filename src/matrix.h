@@ -7,17 +7,21 @@
 struct matrix {
     int rows;
     int cols;
-    std::vector<std::vector<float>> data;
+    std::vector<std::vector<double>> data;
 public:
     matrix(int rows, int cols);
 
-    matrix(std::vector<std::vector<float>> data);
+    matrix(std::vector<std::vector<double>> data);
 
-    std::vector<float> operator*(std::vector<float> vec);
+    std::vector<double> operator*(std::vector<double> vec);
 
     matrix operator*(matrix other);
 
     void operator-=(matrix other);
+
+    matrix operator*(double scalar);
+
+    void substract(matrix other);
 
     void randomize();
 
@@ -26,13 +30,16 @@ public:
     matrix without_last_col();
 };
 
-void vec_mul_scalar(std::vector<float> vec, float scalar);
+void vec_mul_scalar(std::vector<double> vec, double scalar);
 
-void vec_apply(std::vector<float> vec, std::function<float(float)> func);
+void vec_apply(std::vector<double> &vec, std::function<double(double)> func);
 
-std::vector<float> vec_elementwise_mul(std::vector<float>& vec1, std::vector<float>& vec2);
+std::vector<double> vec_elementwise_mul(std::vector<double>& vec1, std::vector<double>& vec2);
 
 matrix matrix_mul(matrix& m1, matrix& m2);
 
+double sample_normal_dist(double mean, double stddev);
+
+matrix outer_product(std::vector<double> &vec1, std::vector<double> &vec2);
 
 #endif //NEURAL_NETWORK_MATRIX_H

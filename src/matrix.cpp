@@ -1,9 +1,9 @@
 #include <vector>
 #include <functional>
 #include <cassert>
+#include <cmath>
 
 #include "matrix.h"
-
 
 matrix::matrix(int rows, int cols) {
     this->rows = rows;
@@ -14,16 +14,16 @@ matrix::matrix(int rows, int cols) {
     }
 }
 
-matrix::matrix(std::vector<std::vector<float>> data) {
+matrix::matrix(std::vector<std::vector<double>> data) {
     this->data = data;
     this->rows = data.size();
     this->cols = data[0].size();
 }
 
-std::vector<float> matrix::operator*(std::vector<float> vec) {
-    std::vector<float> result;
+std::vector<double> matrix::operator*(std::vector<double> vec) {
+    std::vector<double> result;
     for (int i = 0; i < rows; i++) {
-        float sum = 0;
+        double sum = 0;
         for (int j = 0; j < cols; j++) {
             sum += data[i][j] * vec[j];
         }
@@ -44,7 +44,7 @@ matrix matrix::operator*(matrix other) {
     matrix result(rows, other.cols);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < other.cols; j++) {
-            float sum = 0;
+            double sum = 0;
             for (int k = 0; k < cols; k++) {
                 sum += data[i][k] * other.data[k][j];
             }
@@ -54,10 +54,29 @@ matrix matrix::operator*(matrix other) {
     return result;
 }
 
-void matrix::randomize() {
+matrix matrix::operator*(double scalar) {
+    matrix result(rows, cols);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            data[i][j] = static_cast<float>(rand()) / RAND_MAX * 2 - 1;
+            result.data[i][j] = data[i][j] * scalar;
+        }
+    }
+    return result;
+}
+
+void matrix::substract(matrix other) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            data[i][j] -= other.data[i][j];
+        }
+    }
+}
+
+void matrix::randomize() {
+    // use glorot initialization
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            data[i][j] = 0.5; //sample_normal_dist(0, 2.0 / (rows + cols));
         }
     }
 }
@@ -83,24 +102,40 @@ matrix matrix::without_last_col() {
 }
 
 
-void vec_mul_scalar(std::vector<float> vec, float scalar) {
+void vec_mul_scalar(std::vector<double> vec, double scalar) {
     for (size_t i = 0; i < vec.size(); i++) {
         vec[i] *= scalar;
     }
 }
 
-void vec_apply(std::vector<float> vec, std::function<float(float)> func) {
+void vec_apply(std::vector<double> &vec, std::function<double(double)> func) {
     for (size_t i = 0; i < vec.size(); i++) {
         vec[i] = func(vec[i]);
     }
 }
 
-std::vector<float> vec_elementwise_mul(std::vector<float>& vec1, std::vector<float>& vec2) {
+std::vector<double> vec_elementwise_mul(std::vector<double>& vec1, std::vector<double>& vec2) {
     assert(vec1.size() == vec2.size());
-    std::vector<float> result;
+    std::vector<double> result;
     for (size_t i = 0; i < vec1.size(); i++) {
         result.push_back(vec1[i] * vec2[i]);
     }
     return result;
 }
 
+double sample_normal_dist(double mean, double stddev) {
+    double u = (double) rand() / RAND_MAX;
+    double v = (double) rand() / RAND_MAX;
+    double z = sqrt(-2 * log(u)) * cos(2 * M_PI * v);
+    return mean + z * stddev;
+}
+
+matrix outer_product(std::vector<double> &vec1, std::vector<double> &vec2) {
+    matrix result(vec1.size(), vec2.size());
+    for (size_t i = 0; i < vec1.size(); i++) {
+        for (size_t j = 0; j < vec2.size(); j++) {
+            result.data[i][j] = vec1[i] * vec2[j];
+        }
+    }
+    return result;
+}

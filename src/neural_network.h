@@ -9,19 +9,19 @@
 
 struct neural_network {
     std::vector<layer> layers;
-    std::function<float(std::vector<float>, std::vector<float>)> error_function;
+    std::function<double(std::vector<double>, std::vector<double>)> error_function;
 public:
     neural_network(std::vector<int> sizes,
-                   std::vector<std::function<void(std::vector<float>&)>> activations,
-                   std::vector<std::function<void(std::vector<float>&)>> activation_derivatives);
+                   std::vector<std::function<void(std::vector<double>&)>> activations,
+                   std::vector<std::function<void(std::vector<double>&)>> activation_derivatives);
 
-    void train(matrix inputs, std::vector<int> labels, int epochs, float learning_rate);
+    void train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate);
 
-    int predict(std::vector<float> input);
+    int predict(std::vector<double> input);
 
-    std::vector<float> forward(std::vector<float> input);
+    std::vector<double> forward(std::vector<double> input);
 
-    void backward(std::vector<float> predicted, std::vector<float> label, float learning_rate, std::vector<float> input);
+    void backward(std::vector<double> predicted, std::vector<double> label, double learning_rate, std::vector<double> input);
 
     void visualize();
 };

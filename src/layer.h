@@ -10,18 +10,18 @@
 struct layer {
     int size;
     int size_incoming;
-    std::function<void(std::vector<float>&)> activation;
-    std::function<void(std::vector<float>&)> activation_derivative;
+    std::function<void(std::vector<double>&)> activation;
+    std::function<void(std::vector<double>&)> activation_derivative;
     std::unique_ptr<matrix> weights;
-    std::unique_ptr<std::vector<float>> values;
-    std::unique_ptr<std::vector<float>> potential;
+    std::unique_ptr<std::vector<double>> values;
+    std::unique_ptr<std::vector<double>> potential_der;
 
 public:
     layer(int size, int size_incoming,
-          std::function<void(std::vector<float>&)> activation,
-          std::function<void(std::vector<float>&)> activation_derivative);
+          std::function<void(std::vector<double>&)> activation,
+          std::function<void(std::vector<double>&)> activation_derivative);
 
-    std::vector<float> forward(std::vector<float> input);
+    std::vector<double> forward(std::vector<double> input);
 };
 
 
