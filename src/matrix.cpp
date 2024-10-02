@@ -76,7 +76,7 @@ void matrix::randomize() {
     // use glorot initialization
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            data[i][j] = sample_normal_dist(0, 2.0 / (rows + cols));
+            data[i][j] = 0.3; //sample_normal_dist(0, 2.0 / (rows + cols));
         }
     }
 }

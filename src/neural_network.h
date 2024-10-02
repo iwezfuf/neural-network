@@ -15,7 +15,7 @@ public:
                    std::vector<std::function<void(std::vector<double>&)>> activations,
                    std::vector<std::function<void(std::vector<double>&)>> activation_derivatives);
 
-    void train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate);
+    void train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate, bool debug_mode = false);
 
     int predict(std::vector<double> input);
 

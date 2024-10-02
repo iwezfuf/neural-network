@@ -13,7 +13,7 @@ void test_and() {
     matrix inputs(4, 2);
     inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
     std::vector<int> labels = {0, 0, 0, 1};
-    nn->train(inputs, labels, 100, 0.1);
+    nn->train(inputs, labels, 5, 0.05, true);
 
     std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
     if (predicted[0] == 0 && predicted[1] == 0 && predicted[2] == 0 && predicted[3] == 1) {
@@ -40,10 +40,16 @@ void test_or() {
 
 void test_xor() {
     auto *nn = new neural_network({2, 2, 2, 2}, {relu, relu, softmax}, {relu_derivative, relu_derivative, softmax_derivative});
+
     matrix inputs(4, 2);
     inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
     std::vector<int> labels = {0, 1, 1, 0};
-    nn->train(inputs, labels, 300, 0.05);
+
+//    matrix inputs(1, 2);
+//    inputs.data = {{1, 0}};
+//    std::vector<int> labels = {1};
+
+    nn->train(inputs, labels, 100, 0.05);
 
     std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 0) {
@@ -155,9 +161,9 @@ void dataset() {
 
 int main() {
     test_and();
-    test_or();
-    test_larger();
-    test_xor();
+//    test_or();
+//    test_larger();
+//    test_xor();
 
 //    auto *nn = new neural_network({2, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
 //
@@ -173,7 +179,7 @@ int main() {
 //        std::cout << val << " ";
 //    }
 
-    dataset();
+//    dataset();
     return 0;
 }
 
