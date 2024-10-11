@@ -57,7 +57,7 @@ void neural_network::backward(std::vector<double> predicted, std::vector<double>
         std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
-            layers[i + 1].weights->substract(weight_delta * learning_rate);
+            layers[i + 1].weights_delta->substract(weight_delta * -1);
         }
 
         // compute de_dw
@@ -71,7 +71,7 @@ void neural_network::backward(std::vector<double> predicted, std::vector<double>
         weight_delta = outer_product(de_dp,*y_vector);
 
         if (i == 0) {
-            layer.weights->substract(weight_delta * learning_rate);
+            layer.weights_delta->substract(weight_delta * -1);
         }
     }
 }
@@ -112,6 +112,11 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
                 visualize();
                 std::cout << std::endl;
             }
+//            break;
+        }
+        for (auto& layer : layers) {
+            layer.update_weights(learning_rate);
+            layer.zero_weights_delta();
         }
     }
 }

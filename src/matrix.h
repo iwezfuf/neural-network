@@ -28,6 +28,8 @@ public:
     matrix transposed();
 
     matrix without_last_col();
+
+    void zero();
 };
 
 void vec_mul_scalar(std::vector<double> vec, double scalar);

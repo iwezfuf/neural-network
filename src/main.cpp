@@ -13,13 +13,16 @@ void test_and() {
     matrix inputs(4, 2);
     inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
     std::vector<int> labels = {0, 0, 0, 1};
-    nn->train(inputs, labels, 5, 0.05, true);
+    nn->train(inputs, labels, 100, 0.1, true);
 
     std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
     if (predicted[0] == 0 && predicted[1] == 0 && predicted[2] == 0 && predicted[3] == 1) {
         std::cout << "AND test passed" << std::endl;
     } else {
         std::cout << "AND test failed" << std::endl;
+        for (size_t i = 0; i < labels.size(); i++) {
+            std::cout << "Expected: " << labels[i] << " Predicted: " << predicted[i] << std::endl;
+        }
     }
 }
 
@@ -35,6 +38,9 @@ void test_or() {
         std::cout << "OR test passed" << std::endl;
     } else {
         std::cout << "OR test failed" << std::endl;
+        for (size_t i = 0; i < labels.size(); i++) {
+            std::cout << "Expected: " << labels[i] << " Predicted: " << predicted[i] << std::endl;
+        }
     }
 }
 
@@ -49,13 +55,16 @@ void test_xor() {
 //    inputs.data = {{1, 0}};
 //    std::vector<int> labels = {1};
 
-    nn->train(inputs, labels, 100, 0.05);
+    nn->train(inputs, labels, 1000, 0.05, true);
 
     std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 0) {
         std::cout << "XOR test passed" << std::endl;
     } else {
         std::cout << "XOR test failed" << std::endl;
+        for (size_t i = 0; i < labels.size(); i++) {
+            std::cout << "Expected: " << labels[i] << " Predicted: " << predicted[i] << std::endl;
+        }
     }
 }
 
@@ -71,10 +80,9 @@ void test_larger() {
         std::cout << "Larger test passed" << std::endl;
     } else {
         std::cout << "Larger test failed, outputs: " << std::endl;
-        for (auto& val : predicted) {
-            std::cout << val << " ";
+        for (size_t i = 0; i < labels.size(); i++) {
+            std::cout << "Expected: " << labels[i] << " Predicted: " << predicted[i] << std::endl;
         }
-        std::cout << std::endl;
     }
 }
 
@@ -160,10 +168,10 @@ void dataset() {
 }
 
 int main() {
-    test_and();
+//    test_and();
 //    test_or();
 //    test_larger();
-//    test_xor();
+    test_xor();
 
 //    auto *nn = new neural_network({2, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
 //

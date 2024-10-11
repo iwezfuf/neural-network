@@ -13,6 +13,7 @@ struct layer {
     std::function<void(std::vector<double>&)> activation;
     std::function<void(std::vector<double>&)> activation_derivative;
     std::unique_ptr<matrix> weights;
+    std::unique_ptr<matrix> weights_delta;
     std::unique_ptr<std::vector<double>> values;
     std::unique_ptr<std::vector<double>> potential_der;
 
@@ -22,6 +23,10 @@ public:
           std::function<void(std::vector<double>&)> activation_derivative);
 
     std::vector<double> forward(std::vector<double> input);
+
+    void update_weights(double learning_rate) const;
+
+    void zero_weights_delta() const;
 };
 
 
