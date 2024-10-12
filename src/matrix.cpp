@@ -73,10 +73,10 @@ void matrix::substract(matrix other) {
 }
 
 void matrix::randomize() {
-    // use glorot initialization
+    // use He initialization
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            data[i][j] = sample_normal_dist(0, 2.0 / (rows + cols));
+            data[i][j] = sample_normal_dist(0, sqrt(2.0 / cols));
         }
     }
 }
