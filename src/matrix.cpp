@@ -2,6 +2,7 @@
 #include <functional>
 #include <cassert>
 #include <cmath>
+#include <random>
 
 #include "matrix.h"
 
@@ -132,10 +133,10 @@ std::vector<double> vec_elementwise_mul(std::vector<double>& vec1, std::vector<d
 }
 
 double sample_normal_dist(double mean, double stddev) {
-    double u = (double) rand() / RAND_MAX;
-    double v = (double) rand() / RAND_MAX;
-    double z = sqrt(-2 * log(u)) * cos(2 * M_PI * v);
-    return mean + z * stddev;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<> dist(mean, stddev);
+    return dist(gen);
 }
 
 matrix outer_product(std::vector<double> &vec1, std::vector<double> &vec2) {
