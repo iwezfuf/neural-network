@@ -17,6 +17,8 @@ public:
 
     void train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate, bool debug_mode = false);
 
+    std::vector<double> logits(std::vector<double> input);
+
     int predict(std::vector<double> input);
 
     std::vector<double> forward(std::vector<double> input);

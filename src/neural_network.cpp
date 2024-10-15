@@ -2,8 +2,10 @@
 
 #include <iostream>
 #include <utility>
+#include <valarray>
 
 #include "layer.h"
+#include "activation.h"
 
 neural_network::neural_network(std::vector<int> sizes,
                                std::vector<std::function<void(std::vector<double>&)>> activations,
@@ -13,7 +15,7 @@ neural_network::neural_network(std::vector<int> sizes,
     }
 }
 
-std::vector<double> neural_network:: forward(std::vector<double> input) {
+std::vector<double> neural_network::forward(std::vector<double> input) {
     std::vector<double> result = std::move(input);
     for (auto& layer : layers) {
         result = layer.forward(result);
@@ -21,7 +23,11 @@ std::vector<double> neural_network:: forward(std::vector<double> input) {
     return result;
 }
 
-int neural_network:: predict(std::vector<double> input) {
+std::vector<double> neural_network::logits(std::vector<double> input) {
+    return forward(std::move(input));
+}
+
+int neural_network::predict(std::vector<double> input) {
     std::vector<double> result = forward(std::move(input));
 //    std::cout << "Result: " << std::endl;
 //    for (auto& val : result) {
@@ -56,6 +62,13 @@ void neural_network::backward(std::vector<double> predicted, std::vector<double>
         // compute de_dp - de_dy * potential (elementwise_mul)
         std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
 
+        // print de_dp
+//        std::cout << "de_dp: " << " on layer " << i + 1 << std::endl;
+//        for (auto& val : de_dp) {
+//            std::cout << val << " ";
+//        }
+//        std::cout << std::endl;
+
         if (static_cast<size_t>(i) != layers.size() - 1) {
             layers[i + 1].weights_delta->substract(weight_delta * -1);
         }
@@ -83,10 +96,28 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
     }
 
     for (int i = 0; i < epochs; i++) {
+        double error = 0;
         for (int j = 0; j < inputs.rows; j++) {
-//            if (j > 0 && j % 100 == 0) {
-//                std::cout << "Example number: " << j << std::endl;
-//            }
+            std::vector<double> input = inputs.data[j];
+            std::vector<double> label(layers.back().size, 0);
+            label[labels[j]] = 1;
+
+            std::vector<double> predicted = forward(input);
+            softmax(predicted);
+            for (size_t k = 0; k < predicted.size(); k++) {
+                // cross entropy
+                error += -label[k] * log(predicted[k]);
+            }
+        }
+
+//        if (i % 100 == 0) {
+//            std::cout << "Error at epoch " << i << ": " << error << std::endl;
+//        }
+
+        for (int j = 0; j < inputs.rows; j++) {
+            if (j > 0 && j % 100 == 0) {
+                std::cout << "Example number: " << j << std::endl;
+            }
 //            if (j > 10000) break;
             std::vector<double> input = inputs.data[j];
             std::vector<double> label(layers.back().size, 0);
@@ -94,6 +125,24 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
 
             std::vector<double> predicted = forward(input);
             backward(predicted, label, learning_rate, input);
+
+            // print weight gradients
+//            std::cout << "Input: " << input[0] << " " << input[1] << " Logit for 0: " << logits(inputs.data[j])[0] << " Logit for 1: " << logits(inputs.data[j])[1];
+//            std::cout << std::endl;
+//            for (auto& layer : layers) {
+//                for (int k = 0; k < layer.weights_delta->rows; k++) {
+//                    for (int l = 0; l < layer.weights_delta->cols; l++) {
+//                        if (l == layer.weights_delta->cols - 1) {
+//                            std::cout << "Bias: " << layer.weights_delta->data[k][l] << " ";
+//                        } else {
+//                            std::cout << "Weight " << k << " " << l << ": " << layer.weights_delta->data[k][l]
+//                                      << "         ";
+//                        }
+//                        std::cout << std::endl;
+//                    }
+//                }
+//            }
+
 
             if (debug_mode) {
                 std::cout << "AFTER epoch: " << i << " Example: [ ";
@@ -115,6 +164,18 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
 //            break;
         }
         for (auto& layer : layers) {
+//            // print weight gradients
+//            for (int k = 0; k < layer.weights_delta->rows; k++) {
+//                for (int l = 0; l < layer.weights_delta->cols; l++) {
+//                    if (l == layer.weights_delta->cols - 1) {
+//                        std::cout << "Bias: " << layer.weights_delta->data[k][l] << " ";
+//                    } else {
+//                        std::cout << "Weight " << k << " " << l << ": " << layer.weights_delta->data[k][l]
+//                                  << "         ";
+//                    }
+//                    std::cout << std::endl;
+//                }
+//            }
             layer.update_weights(learning_rate);
             layer.zero_weights_delta();
         }
@@ -122,15 +183,15 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
 }
 
 void neural_network::visualize() {
-    for (int i = 0; i < layers.size(); i++) {
+    for (size_t i = 0; i < layers.size(); i++) {
         auto& layer = layers[i];
         std::cout << "Layer: " << i << std::endl;
-        for (int i = 0; i < layer.weights->rows; i++) {
-            for (int j = 0; j < layer.weights->cols; j++) {
-                if (j == layer.weights->cols - 1) {
-                    std::cout << "Bias: " << layer.weights->data[i][j] << " ";
+        for (int j = 0; j < layer.weights->rows; j++) {
+            for (int k = 0; k < layer.weights->cols; k++) {
+                if (k == layer.weights->cols - 1) {
+                    std::cout << "Bias: " << layer.weights->data[j][k] << " ";
                 } else {
-                    std::cout << "Weight " << i << " " << j << ": " << layer.weights->data[i][j] << "         ";
+                    std::cout << "Weight " << j << " " << k << ": " << layer.weights->data[j][k] << "         ";
                 }
             }
             std::cout << std::endl;
