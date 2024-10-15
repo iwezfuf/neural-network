@@ -74,9 +74,9 @@ void matrix::substract(matrix other) {
 }
 
 void matrix::randomize() {
-    // use He initialization
+    // use He initialization, set bias to 0
     for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
+        for (int j = 0; j < cols - 1; j++) {
             data[i][j] = sample_normal_dist(0, sqrt(2.0 / cols));
         }
     }

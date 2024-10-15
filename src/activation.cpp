@@ -21,11 +21,11 @@ void relu_derivative(std::vector<double>& x) {
 
 void softmax(std::vector<double>& x) {
     double sum = 0;
-    for (size_t i = 0; i < x.size(); i++) {
-        sum += exp(x[i]);
+    for (double i : x) {
+        sum += exp(i);
     }
-    for (size_t i = 0; i < x.size(); i++) {
-        x[i] = exp(x[i]) / sum;
+    for (double & i : x) {
+        i = exp(i) / sum;
     }
 }
 
