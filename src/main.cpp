@@ -93,8 +93,8 @@ void test_larger() {
 }
 
 void dataset() {
-    const std::string labels_file = "data/fashion_mnist_train_labels.csv";
-    const std::string vectors_file = "data/fashion_mnist_train_vectors.csv";
+    const std::string labels_file = "../data/fashion_mnist_train_labels.csv";
+    const std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
 
     std::vector<int> labels;
     std::vector<std::vector<double>> vectors;
@@ -156,7 +156,7 @@ void dataset() {
             inputs.data[i][j] = vectors[i][j];
         }
     }
-    nn->train(inputs, labels, 1, 0.1);
+    nn->train(inputs, labels, 60000/20/100, 0.1);
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size(); i++) {
@@ -170,14 +170,16 @@ void dataset() {
             correct++;
         }
     }
-    std::cout << "Accuracy: " << static_cast<float>(correct) / labels.size() << std::endl;
+    double accuracy = static_cast<double>(correct) / labels.size();
+    // print with 3 decimal places
+    std::cout << "Accuracy: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
 }
 
 int main() {
-    test_and();
-    test_or();
-    test_larger();
-    test_xor();
+//    test_and();
+//    test_or();
+//    test_larger();
+//    test_xor();
 
 //    auto *nn = new neural_network({2, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
 //
@@ -193,7 +195,7 @@ int main() {
 //        std::cout << val << " ";
 //    }
 
-//    dataset();
+    dataset();
     return 0;
 }
 

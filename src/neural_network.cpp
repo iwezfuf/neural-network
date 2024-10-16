@@ -1,8 +1,10 @@
 #include "neural_network.h"
 
 #include <iostream>
+#include <random>
 #include <utility>
 #include <valarray>
+#include <numeric>
 
 #include "layer.h"
 #include "activation.h"
@@ -95,33 +97,22 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
         visualize();
     }
 
+    // sort inputs and labels randomly
+    std::vector<int> indices(inputs.rows);
+    std::iota(indices.begin(), indices.end(), 0);
+    std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device()()));
+
     for (int i = 0; i < epochs; i++) {
-        double error = 0;
-        for (int j = 0; j < inputs.rows; j++) {
-            std::vector<double> input = inputs.data[j];
-            std::vector<double> label(layers.back().size, 0);
-            label[labels[j]] = 1;
+        for (int j = 0; j < 20; j++) {
+            int index = indices[i*20 + j];
 
-            std::vector<double> predicted = forward(input);
-            softmax(predicted);
-            for (size_t k = 0; k < predicted.size(); k++) {
-                // cross entropy
-                error += -label[k] * log(predicted[k]);
-            }
-        }
-
-//        if (i % 100 == 0) {
-//            std::cout << "Error at epoch " << i << ": " << error << std::endl;
-//        }
-
-        for (int j = 0; j < inputs.rows; j++) {
             if (j > 0 && j % 100 == 0) {
                 std::cout << "Example number: " << j << std::endl;
             }
 //            if (j > 10000) break;
-            std::vector<double> input = inputs.data[j];
+            std::vector<double> input = inputs.data[index];
             std::vector<double> label(layers.back().size, 0);
-            label[labels[j]] = 1;
+            label[labels[index]] = 1;
 
             std::vector<double> predicted = forward(input);
             backward(predicted, label, learning_rate, input);
