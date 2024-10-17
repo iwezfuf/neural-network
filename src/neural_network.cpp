@@ -44,7 +44,7 @@ int neural_network::predict(const std::vector<double>& input) {
     return max_index;
 }
 
-void neural_network::backward(std::vector<double> input, std::vector<double> label) {
+void neural_network::backward(const std::vector<double> &input, const std::vector<double> &label) {
     std::vector<double> &predicted = get_outputs();
     std::vector<double> de_dy(predicted.size());
     matrix weight_delta = matrix(0, 0);
@@ -76,7 +76,7 @@ void neural_network::backward(std::vector<double> input, std::vector<double> lab
         }
 
         // compute de_dw
-        std::vector<double> *y_vector;
+        const std::vector<double> *y_vector;
         if (i == 0) {
             y_vector = &input;
         } else {

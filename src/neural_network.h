@@ -27,9 +27,7 @@ public:
 
     void train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate, bool debug_mode);
 
-//    void backward(const std::vector<double> &input, const std::vector<double> &label);
-
-    void backward(std::vector<double> input, std::vector<double> label);
+    void backward(const std::vector<double> &input, const std::vector<double> &label);
 };
 
 
