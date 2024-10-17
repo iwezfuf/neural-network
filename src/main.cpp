@@ -156,7 +156,7 @@ void dataset() {
             inputs.data[i][j] = vectors[i][j];
         }
     }
-    nn->train(inputs, labels, 60000/20/100, 0.1);
+    nn->train(inputs, labels, 60000/20/100, 0.1, false);
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size(); i++) {

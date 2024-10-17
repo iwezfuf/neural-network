@@ -38,7 +38,7 @@ int neural_network::predict(const std::vector<double>& input) {
     auto& output = get_outputs();
     for (size_t i = 0; i < output.size(); i++) {
         if (output[i] > output[max_index]) {
-            max_index = i;
+            max_index = static_cast<int>(i);
         }
     }
     return max_index;
@@ -49,7 +49,7 @@ void neural_network::backward(std::vector<double> input, std::vector<double> lab
     std::vector<double> de_dy(predicted.size());
     matrix weight_delta = matrix(0, 0);
 
-    for (int i = layers.size() - 1; i >= 0; i--) {
+    for (int i = static_cast<int>(layers.size()) - 1; i >= 0; i--) {
         auto& layer = layers[i];
 
         // compute de_dy
@@ -82,7 +82,7 @@ void neural_network::backward(std::vector<double> input, std::vector<double> lab
         } else {
             y_vector = layers[i - 1].values.get();
         }
-        y_vector->push_back(1);
+        // outer product with 1 added to end of y_vector
         weight_delta = outer_product(de_dp,*y_vector);
 
         if (i == 0) {
@@ -91,7 +91,7 @@ void neural_network::backward(std::vector<double> input, std::vector<double> lab
     }
 }
 
-void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate, bool debug_mode) {
+void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate, bool debug_mode) {
     if (debug_mode) {
         std::cout << "BEFORE" << std::endl;
         visualize();
@@ -111,7 +111,7 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
                 std::cout << "Example number: " << j << std::endl;
             }
 //            if (j > 10000) break;
-            std::vector<double> input = inputs.data[index];
+            const std::vector<double> &input = inputs.data[index];
             std::vector<double> label(layers.back().size, 0);
             label[labels[index]] = 1;
 

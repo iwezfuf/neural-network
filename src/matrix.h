@@ -36,7 +36,7 @@ public:
 
 void vec_mul_scalar(std::vector<double> vec, double scalar);
 
-void vec_apply(std::vector<double> &vec, std::function<double(double)> func);
+void vec_apply(std::vector<double> &vec, const std::function<double(double)>& func);
 
 std::vector<double> vec_elementwise_mul(std::vector<double>& vec1, std::vector<double>& vec2);
 
@@ -44,6 +44,6 @@ matrix matrix_mul(matrix& m1, matrix& m2);
 
 double sample_normal_dist(double mean, double stddev);
 
-matrix outer_product(std::vector<double> &vec1, std::vector<double> &vec2);
+matrix outer_product(const std::vector<double> &vec1, const std::vector<double> &vec2);
 
 #endif //NEURAL_NETWORK_MATRIX_H

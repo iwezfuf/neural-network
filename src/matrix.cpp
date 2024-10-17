@@ -16,8 +16,8 @@ matrix::matrix(int rows, int cols) {
 
 matrix::matrix(std::vector<std::vector<double>> data) {
     this->data = data;
-    this->rows = data.size();
-    this->cols = data[0].size();
+    this->rows = static_cast<int>(data.size());
+    this->cols = static_cast<int>(data[0].size());
 }
 
 std::vector<double> matrix::operator*(std::vector<double> vec) {
@@ -132,7 +132,7 @@ void vec_mul_scalar(std::vector<double> vec, double scalar) {
     }
 }
 
-void vec_apply(std::vector<double> &vec, std::function<double(double)> func) {
+void vec_apply(std::vector<double> &vec, const std::function<double(double)>& func) {
     for (size_t i = 0; i < vec.size(); i++) {
         vec[i] = func(vec[i]);
     }
@@ -154,12 +154,16 @@ double sample_normal_dist(double mean, double stddev) {
     return dist(gen);
 }
 
-matrix outer_product(std::vector<double> &vec1, std::vector<double> &vec2) {
-    matrix result(vec1.size(), vec2.size());
+// vec2 should have an additional 1 at the end
+matrix outer_product(const std::vector<double> &vec1, const std::vector<double> &vec2) {
+    matrix result(static_cast<int>(vec1.size()), static_cast<int>(vec2.size() + 1));
     for (size_t i = 0; i < vec1.size(); i++) {
         for (size_t j = 0; j < vec2.size(); j++) {
             result.data[i][j] = vec1[i] * vec2[j];
         }
+    }
+    for (size_t i = 0; i < vec1.size(); i++) {
+        result.data[i][vec2.size()] = vec1[i];
     }
     return result;
 }
