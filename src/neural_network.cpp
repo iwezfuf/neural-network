@@ -2,8 +2,6 @@
 
 #include <iostream>
 #include <random>
-#include <utility>
-#include <valarray>
 #include <numeric>
 
 #include "layer.h"
@@ -17,35 +15,37 @@ neural_network::neural_network(std::vector<int> sizes,
     }
 }
 
-std::vector<double> neural_network::forward(std::vector<double> input) {
-    std::vector<double> result = std::move(input);
-    for (auto& layer : layers) {
-        result = layer.forward(result);
+void neural_network::forward(const std::vector<double> &input) {
+    layers[0].forward(input);
+    for (size_t i = 1; i < layers.size(); i++) {
+        layers[i].forward(*layers[i - 1].values);
     }
-    return result;
 }
 
-std::vector<double> neural_network::logits(std::vector<double> input) {
-    return forward(std::move(input));
+std::vector<double> neural_network::logits(const std::vector<double> &input) {
+    forward(input);
+    return get_outputs();
 }
 
-int neural_network::predict(std::vector<double> input) {
-    std::vector<double> result = forward(std::move(input));
+int neural_network::predict(const std::vector<double>& input) {
+    forward(input);
 //    std::cout << "Result: " << std::endl;
 //    for (auto& val : result) {
 //        std::cout << val << " ";
 //    }
 //    std::cout << std::endl;
     int max_index = 0;
-    for (size_t i = 0; i < result.size(); i++) {
-        if (result[i] > result[max_index]) {
+    auto& output = get_outputs();
+    for (size_t i = 0; i < output.size(); i++) {
+        if (output[i] > output[max_index]) {
             max_index = i;
         }
     }
     return max_index;
 }
 
-void neural_network::backward(std::vector<double> predicted, std::vector<double> label, double learning_rate, std::vector<double> input) {
+void neural_network::backward(std::vector<double> input, std::vector<double> label) {
+    std::vector<double> &predicted = get_outputs();
     std::vector<double> de_dy(predicted.size());
     matrix weight_delta = matrix(0, 0);
 
@@ -103,8 +103,9 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
     std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device()()));
 
     for (int i = 0; i < epochs; i++) {
-        for (int j = 0; j < 20; j++) {
-            int index = indices[i*20 + j];
+        int batch_size = std::min(20, inputs.rows);
+        for (int j = 0; j < batch_size; j++) {
+            int index = indices[(i*batch_size + j) % inputs.rows];
 
             if (j > 0 && j % 100 == 0) {
                 std::cout << "Example number: " << j << std::endl;
@@ -114,8 +115,8 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
             std::vector<double> label(layers.back().size, 0);
             label[labels[index]] = 1;
 
-            std::vector<double> predicted = forward(input);
-            backward(predicted, label, learning_rate, input);
+            forward(input);
+            backward(input, label);
 
             // print weight gradients
 //            std::cout << "Input: " << input[0] << " " << input[1] << " Logit for 0: " << logits(inputs.data[j])[0] << " Logit for 1: " << logits(inputs.data[j])[1];
@@ -141,7 +142,7 @@ void neural_network::train(matrix inputs, std::vector<int> labels, int epochs, d
                     std::cout << val << " ";
                 }
                 std::cout << "] Predicted: [ ";
-                for (auto &val: predicted) {
+                for (auto &val: *layers[layers.size() - 1].values) {
                     std::cout << val << " ";
                 }
                 std::cout << "] Label: [ ";
@@ -189,4 +190,8 @@ void neural_network::visualize() {
         }
         std::cout << std::endl;
     }
+}
+
+std::vector<double> &neural_network::get_outputs() {
+    return *layers[layers.size() - 1].values;
 }

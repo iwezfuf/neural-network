@@ -30,6 +30,8 @@ public:
     matrix without_last_col();
 
     void zero();
+
+    std::vector<double> calc_potentials(const std::vector<double> &vec);
 };
 
 void vec_mul_scalar(std::vector<double> vec, double scalar);

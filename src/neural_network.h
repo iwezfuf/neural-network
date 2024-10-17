@@ -17,15 +17,17 @@ public:
 
     void train(matrix inputs, std::vector<int> labels, int epochs, double learning_rate, bool debug_mode = false);
 
-    std::vector<double> logits(std::vector<double> input);
+    std::vector<double> logits(const std::vector<double> &input);
 
-    int predict(std::vector<double> input);
+    int predict(const std::vector<double>& input);
 
-    std::vector<double> forward(std::vector<double> input);
-
-    void backward(std::vector<double> predicted, std::vector<double> label, double learning_rate, std::vector<double> input);
+    void backward(std::vector<double> input, std::vector<double> label);
 
     void visualize();
+
+    void forward(const std::vector<double> &input);
+
+    std::vector<double>& get_outputs();
 };
 
 

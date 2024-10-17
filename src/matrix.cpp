@@ -1,5 +1,4 @@
 #include <vector>
-#include <functional>
 #include <cassert>
 #include <cmath>
 #include <random>
@@ -108,6 +107,22 @@ void matrix::zero() {
             data[i][j] = 0;
         }
     }
+}
+
+std::vector<double> matrix::calc_potentials(const std::vector<double> &vec) {
+    std::vector<double> result;
+    for (int i = 0; i < rows; i++) {
+        double sum = 0;
+        for (int j = 0; j < cols - 1; j++) {
+            sum += data[i][j] * vec[j];
+        }
+        result.push_back(sum);
+    }
+    // add biases
+    for (int i = 0; i < rows; i++) {
+        result[i] += data[i][cols - 1];
+    }
+    return result;
 }
 
 

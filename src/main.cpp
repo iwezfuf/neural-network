@@ -171,15 +171,14 @@ void dataset() {
         }
     }
     double accuracy = static_cast<double>(correct) / labels.size();
-    // print with 3 decimal places
     std::cout << "Accuracy: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
 }
 
 int main() {
-//    test_and();
-//    test_or();
-//    test_larger();
-//    test_xor();
+    test_and();
+    test_or();
+    test_larger();
+    test_xor();
 
 //    auto *nn = new neural_network({2, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
 //
@@ -195,7 +194,7 @@ int main() {
 //        std::cout << val << " ";
 //    }
 
-    dataset();
+//    dataset();
     return 0;
 }
 

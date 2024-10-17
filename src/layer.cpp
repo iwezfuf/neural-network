@@ -1,9 +1,7 @@
 #include "layer.h"
 
 #include <memory>
-#include <functional>
 #include <vector>
-#include <iostream>
 
 #include "matrix.h"
 
@@ -19,9 +17,8 @@ layer::layer(int size, int size_incoming, std::function<void(std::vector<double>
     this->values = std::make_unique<std::vector<double>>(std::vector<double>(size));
 }
 
-std::vector<double> layer::forward(std::vector<double> input) {
-    input.push_back(1);
-    std::vector<double> result = (*weights) * input;
+void layer::forward(const std::vector<double> &input) {
+    std::vector<double> result = weights->calc_potentials(input);
 
     auto result_copy = result;
     this->activation_derivative(result_copy);
@@ -29,7 +26,6 @@ std::vector<double> layer::forward(std::vector<double> input) {
 
     activation(result);
     values = std::make_unique<std::vector<double>>(result);
-    return result;
 }
 
 void layer::update_weights(double learning_rate) const {
