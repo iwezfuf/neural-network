@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <random>
-#include <numeric>
 
 #include "layer.h"
 #include "activation.h"
@@ -29,19 +28,7 @@ std::vector<double> neural_network::logits(const std::vector<double> &input) {
 
 int neural_network::predict(const std::vector<double>& input) {
     forward(input);
-//    std::cout << "Result: " << std::endl;
-//    for (auto& val : result) {
-//        std::cout << val << " ";
-//    }
-//    std::cout << std::endl;
-    int max_index = 0;
-    auto& output = get_outputs();
-    for (size_t i = 0; i < output.size(); i++) {
-        if (output[i] > output[max_index]) {
-            max_index = static_cast<int>(i);
-        }
-    }
-    return max_index;
+    return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
 }
 
 void neural_network::backward(const std::vector<double> &input, const std::vector<double> &label) {
