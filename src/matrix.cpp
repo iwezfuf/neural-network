@@ -13,24 +13,6 @@ matrix::matrix(int rows, int cols) {
     }
 }
 
-matrix::matrix(std::vector<std::vector<double>> data) {
-    this->data = data;
-    this->rows = static_cast<int>(data.size());
-    this->cols = static_cast<int>(data[0].size());
-}
-
-std::vector<double> matrix::operator*(std::vector<double> vec) {
-    std::vector<double> result;
-    for (int i = 0; i < rows; i++) {
-        double sum = 0;
-        for (int j = 0; j < cols; j++) {
-            sum += data[i][j] * vec[j];
-        }
-        result.push_back(sum);
-    }
-    return result;
-}
-
 void matrix::operator-=(matrix other) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -39,18 +21,12 @@ void matrix::operator-=(matrix other) {
     }
 }
 
-matrix matrix::operator*(matrix other) {
-    matrix result(rows, other.cols);
+void matrix::operator+=(matrix other) {
     for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < other.cols; j++) {
-            double sum = 0;
-            for (int k = 0; k < cols; k++) {
-                sum += data[i][k] * other.data[k][j];
-            }
-            result.data[i][j] = sum;
+        for (int j = 0; j < cols; j++) {
+            data[i][j] += other.data[i][j];
         }
     }
-    return result;
 }
 
 matrix matrix::operator*(double scalar) {
@@ -61,14 +37,6 @@ matrix matrix::operator*(double scalar) {
         }
     }
     return result;
-}
-
-void matrix::substract(matrix other) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            data[i][j] -= other.data[i][j];
-        }
-    }
 }
 
 void matrix::randomize() {
