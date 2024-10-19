@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <random>
+#include <cassert>
 
 #include "layer.h"
 #include "activation.h"
@@ -45,18 +46,11 @@ void neural_network::backward(const std::vector<double> &input, const std::vecto
                 de_dy[j] = predicted[j] - label[j];
             }
         } else {
-            de_dy = (matrix({vec_elementwise_mul(de_dy, *layers[i + 1].potential_der)}) * layers[i + 1].weights->without_last_col()).data[0];
+            de_dy = compute_de_dy(de_dy, *layers[i + 1].potential_der, *layers[i + 1].weights);
         }
 
-        // compute de_dp - de_dy * potential (elementwise_mul)
+        // compute de_dp = de_dy * potential (elementwise_mul)
         std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
-
-        // print de_dp
-//        std::cout << "de_dp: " << " on layer " << i + 1 << std::endl;
-//        for (auto& val : de_dp) {
-//            std::cout << val << " ";
-//        }
-//        std::cout << std::endl;
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
             layers[i + 1].weights_delta->substract(weight_delta * -1);

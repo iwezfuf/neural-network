@@ -46,4 +46,6 @@ double sample_normal_dist(double mean, double stddev);
 
 matrix outer_product(const std::vector<double> &vec1, const std::vector<double> &vec2);
 
+std::vector<double> compute_de_dy(const std::vector<double> &prev_de_dy, const std::vector<double> &potential_der, const matrix &weights);
+
 #endif //NEURAL_NETWORK_MATRIX_H

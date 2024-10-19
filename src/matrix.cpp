@@ -167,3 +167,16 @@ matrix outer_product(const std::vector<double> &vec1, const std::vector<double> 
     }
     return result;
 }
+
+std::vector<double> compute_de_dy(const std::vector<double> &prev_de_dy, const std::vector<double> &potential_der, const matrix &weights) {
+    std::vector<double> res(weights.cols - 1, 0);
+
+    for (size_t i = 0; i < prev_de_dy.size(); i++) {
+        double factor = prev_de_dy[i] * potential_der[i];
+        // skip bias
+        for (int j = 0; j < weights.cols - 1; j++) {
+            res[j] += factor * weights.data[i][j];
+        }
+    }
+    return res;
+}
