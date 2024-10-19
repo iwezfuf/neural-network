@@ -156,7 +156,7 @@ void dataset() {
             inputs.data[i][j] = vectors[i][j];
         }
     }
-    nn->train(inputs, labels, 60000/20/100, 0.1, false);
+    nn->train(inputs, labels, 60000/20, 0.05, false);
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size(); i++) {
@@ -175,10 +175,10 @@ void dataset() {
 }
 
 int main() {
-    test_and();
-    test_or();
-    test_larger();
-    test_xor();
+//    test_and();
+//    test_or();
+//    test_larger();
+//    test_xor();
 
 //    auto *nn = new neural_network({2, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
 //
@@ -194,7 +194,7 @@ int main() {
 //        std::cout << val << " ";
 //    }
 
-//    dataset();
+    dataset();
     return 0;
 }
 
