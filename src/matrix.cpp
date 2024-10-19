@@ -1,6 +1,5 @@
 #include <vector>
 #include <cassert>
-#include <cmath>
 #include <random>
 
 #include "matrix.h"
@@ -81,26 +80,6 @@ void matrix::randomize() {
     }
 }
 
-matrix matrix::transposed() {
-    matrix result(cols, rows);
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            result.data[j][i] = data[i][j];
-        }
-    }
-    return result;
-}
-
-matrix matrix::without_last_col() {
-    matrix result(rows, cols - 1);
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols - 1; j++) {
-            result.data[i][j] = data[i][j];
-        }
-    }
-    return result;
-}
-
 void matrix::zero() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -123,13 +102,6 @@ std::vector<double> matrix::calc_potentials(const std::vector<double> &vec) {
         result[i] += data[i][cols - 1];
     }
     return result;
-}
-
-
-void vec_mul_scalar(std::vector<double> vec, double scalar) {
-    for (size_t i = 0; i < vec.size(); i++) {
-        vec[i] *= scalar;
-    }
 }
 
 void vec_apply(std::vector<double> &vec, const std::function<double(double)>& func) {
