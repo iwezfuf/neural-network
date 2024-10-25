@@ -17,7 +17,7 @@ layer::layer(int size, int size_incoming, std::function<void(std::vector<double>
     this->values = std::make_unique<std::vector<double>>(std::vector<double>(size));
 }
 
-void layer::forward(const std::vector<double> &input) {
+void layer::forward(const matrix_row_view &input) {
     std::vector<double> result = weights->calc_potentials(input);
 
     auto result_copy = result;

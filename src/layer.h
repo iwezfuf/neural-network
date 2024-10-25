@@ -22,7 +22,7 @@ public:
           std::function<void(std::vector<double>&)> activation,
           std::function<void(std::vector<double>&)> activation_derivative);
 
-    void forward(const std::vector<double> &input);
+    void forward(const matrix_row_view &input);
 
     void update_weights(double learning_rate) const;
 

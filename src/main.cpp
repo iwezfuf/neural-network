@@ -11,7 +11,7 @@
 void test_and() {
     auto *nn = new neural_network({2, 4, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
     matrix inputs(4, 2);
-    inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
+    inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 0, 0, 1};
     // print initial weights
 //    std::cout << "Initial weights" << std::endl;
@@ -28,14 +28,14 @@ void test_and() {
         std::cout << "AND test failed" << std::endl;
     }
     for (size_t i = 0; i < labels.size(); i++) {
-        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
+//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
 void test_or() {
     auto *nn = new neural_network({2, 4, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
     matrix inputs(4, 2);
-    inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
+    inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 1, 1, 1};
     nn->train(inputs, labels, 1000, 0.05, false);
 
@@ -46,7 +46,7 @@ void test_or() {
         std::cout << "OR test failed" << std::endl;
     }
     for (size_t i = 0; i < labels.size(); i++) {
-        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
+//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
@@ -54,7 +54,7 @@ void test_xor() {
     auto *nn = new neural_network({2, 8, 8, 2}, {relu, relu, softmax}, {relu_derivative, relu_derivative, softmax_derivative});
 
     matrix inputs(4, 2);
-    inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
+    inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 1, 1, 0};
 
 //    matrix inputs(1, 2);
@@ -70,14 +70,14 @@ void test_xor() {
         std::cout << "XOR test failed" << std::endl;
     }
     for (size_t i = 0; i < labels.size(); i++) {
-        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
+//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
 void test_larger() {
     auto *nn = new neural_network({2, 2}, {softmax}, {softmax_derivative});
     matrix inputs(7, 2);
-    inputs.data = {{0, 1}, {1, 0}, {2, 3}, {3, 2}, {1, 2}, {2, 1}, {100, 10}};
+    inputs.data = {0, 1, 1, 0, 2, 3, 3, 2, 1, 2, 2, 1, 100, 10};
     std::vector<int> labels = {0, 1, 0, 1, 0, 1, 1};
     nn->train(inputs, labels, 500, 0.05, false);
 
@@ -88,7 +88,7 @@ void test_larger() {
         std::cout << "Larger test failed, outputs: " << std::endl;
     }
     for (size_t i = 0; i < labels.size(); i++) {
-        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
+//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
@@ -97,7 +97,7 @@ void dataset() {
     const std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
 
     std::vector<int> labels;
-    std::vector<std::vector<double>> vectors;
+    std::vector<double> vectors;
 
     std::ifstream labels_stream(labels_file);
     if (!labels_stream.is_open()) {
@@ -119,48 +119,24 @@ void dataset() {
 
     std::string line;
     while (std::getline(vectors_stream, line)) {
-        std::vector<double> vector;
         std::stringstream ss(line);
         std::string value;
 
         while (std::getline(ss, value, ',')) {
-            vector.push_back(std::stod(value));
+            vectors.push_back(std::stod(value));
         }
-        vectors.push_back(vector);
     }
     vectors_stream.close();
 
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() << " vectors." << std::endl;
-    std::cout << "First label: " << labels[0] << std::endl;
-    std::cout << "First vector: ";
-    for (auto& val : vectors[0]) {
-        std::cout << val << " ";
-    }
-    std::cout << std::endl;
-
-    // Normalize vectors
-    for (auto& vector : vectors) {
-        double sum = 0;
-        for (auto& val : vector) {
-            sum += val;
-        }
-        for (auto& val : vector) {
-            val /= sum;
-        }
-    }
 
     auto *nn = new neural_network({784, 521, 128, 10}, {relu, relu, softmax}, {relu_derivative, relu_derivative, softmax_derivative});
-    matrix inputs(vectors.size(), 784);
-    for (size_t i = 0; i < vectors.size(); i++) {
-        for (size_t j = 0; j < vectors[i].size(); j++) {
-            inputs.data[i][j] = vectors[i][j];
-        }
-    }
+    matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     nn->train(inputs, labels, 60000/20, 0.05, false);
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size(); i++) {
-        predicted.push_back(nn->predict(vectors[i]));
+        predicted.push_back(nn->predict({vectors[i]}));
     }
 
     // print accuracy

@@ -15,14 +15,14 @@ neural_network::neural_network(std::vector<int> sizes,
     }
 }
 
-void neural_network::forward(const std::vector<double> &input) {
+void neural_network::forward(const matrix_row_view &input) {
     layers[0].forward(input);
     for (size_t i = 1; i < layers.size(); i++) {
         layers[i].forward(*layers[i - 1].values);
     }
 }
 
-std::vector<double> neural_network::logits(const std::vector<double> &input) {
+std::vector<double> neural_network::logits(const matrix_row_view &input) {
     forward(input);
     return get_outputs();
 }
@@ -32,7 +32,7 @@ int neural_network::predict(const std::vector<double>& input) {
     return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
 }
 
-void neural_network::backward(const std::vector<double> &input, const std::vector<double> &label) {
+void neural_network::backward(const matrix_row_view &input, const std::vector<double> &label) {
     std::vector<double> &predicted = get_outputs();
     std::vector<double> de_dy(predicted.size());
     matrix weight_delta = matrix(0, 0);
@@ -57,11 +57,11 @@ void neural_network::backward(const std::vector<double> &input, const std::vecto
         }
 
         // compute de_dw
-        const std::vector<double> *y_vector;
+        const matrix_row_view *y_vector;
         if (i == 0) {
             y_vector = &input;
         } else {
-            y_vector = layers[i - 1].values.get();
+            y_vector = new matrix_row_view(layers[i - 1].values->data(), layers[i - 1].size);
         }
         // outer product with 1 added to end of y_vector
         weight_delta = outer_product(de_dp,*y_vector);
@@ -93,7 +93,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
 //                std::cout << "Example number: " << i * 20 + j << std::endl;
 //            }
 //            if (j > 10000) break;
-            const std::vector<double> &input = inputs.data[index];
+            const matrix_row_view &input = inputs.get_row(index);
             std::vector<double> label(layers.back().size, 0);
             label[labels[index]] = 1;
 
@@ -163,9 +163,10 @@ void neural_network::visualize() {
         for (int j = 0; j < layer.weights->rows; j++) {
             for (int k = 0; k < layer.weights->cols; k++) {
                 if (k == layer.weights->cols - 1) {
-                    std::cout << "Bias: " << layer.weights->data[j][k] << " ";
+                    // TODO
+//                    std::cout << "Bias: " << layer.weights->data[layer.weights->index(j, k)] << " ";
                 } else {
-                    std::cout << "Weight " << j << " " << k << ": " << layer.weights->data[j][k] << "         ";
+//                    std::cout << "Weight " << j << " " << k << ": " << layer.weights->data[layer.weights->index(j, k)] << "         ";
                 }
             }
             std::cout << std::endl;
