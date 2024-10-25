@@ -11,9 +11,7 @@ struct neural_network {
     std::vector<layer> layers;
     std::function<double(std::vector<double>, std::vector<double>)> error_function;
 public:
-    neural_network(std::vector<int> sizes,
-                   std::vector<std::function<void(std::vector<double>&)>> activations,
-                   std::vector<std::function<void(std::vector<double>&)>> activation_derivatives);
+    neural_network(std::vector<int> sizes, const std::vector<Activation> &activations);
 
     std::vector<double> logits(const matrix_row_view &input);
 

@@ -6,21 +6,18 @@
 #include <vector>
 
 #include "matrix.h"
+#include "activation.h"
 
 struct layer {
     int size;
-    int size_incoming;
-    std::function<void(std::vector<double>&)> activation;
-    std::function<void(std::vector<double>&)> activation_derivative;
+    Activation activation;
     std::unique_ptr<matrix> weights;
     std::unique_ptr<matrix> weights_delta;
     std::unique_ptr<std::vector<double>> values;
     std::unique_ptr<std::vector<double>> potential_der;
 
 public:
-    layer(int size, int size_incoming,
-          std::function<void(std::vector<double>&)> activation,
-          std::function<void(std::vector<double>&)> activation_derivative);
+    layer(int size, int size_incoming, Activation activation);
 
     void forward(const matrix_row_view &input);
 

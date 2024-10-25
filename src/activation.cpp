@@ -1,5 +1,6 @@
 #include "activation.h"
 #include <cmath>
+#include <cassert>
 
 #include "matrix.h"
 
@@ -33,4 +34,24 @@ void softmax_derivative(std::vector<double> &x) {
     for (size_t i = 0; i < x.size(); i++) {
         x[i] = 1;
     }
+}
+
+std::function<void(std::vector<double>&)> get_activation(Activation activation) {
+    switch (activation) {
+        case Activation::RELU:
+            return relu;
+        case Activation::SOFTMAX:
+            return softmax;
+    }
+    assert(false);
+}
+
+std::function<void(std::vector<double>&)> get_activation_derivative(Activation activation) {
+    switch (activation) {
+        case Activation::RELU:
+            return relu_derivative;
+        case Activation::SOFTMAX:
+            return softmax_derivative;
+    }
+    assert(false);
 }

@@ -9,7 +9,7 @@
 #include "activation.h"
 
 void test_and() {
-    auto *nn = new neural_network({2, 4, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
+    auto *nn = new neural_network({2, 4, 2}, {Activation::RELU, Activation::SOFTMAX});
     matrix inputs(4, 2);
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 0, 0, 1};
@@ -33,7 +33,7 @@ void test_and() {
 }
 
 void test_or() {
-    auto *nn = new neural_network({2, 4, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
+    auto *nn = new neural_network({2, 4, 2}, {Activation::RELU, Activation::SOFTMAX});
     matrix inputs(4, 2);
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 1, 1, 1};
@@ -51,7 +51,7 @@ void test_or() {
 }
 
 void test_xor() {
-    auto *nn = new neural_network({2, 8, 8, 2}, {relu, relu, softmax}, {relu_derivative, relu_derivative, softmax_derivative});
+    auto *nn = new neural_network({2, 8, 8, 2}, {Activation::RELU, Activation::RELU});
 
     matrix inputs(4, 2);
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
@@ -75,7 +75,7 @@ void test_xor() {
 }
 
 void test_larger() {
-    auto *nn = new neural_network({2, 2}, {softmax}, {softmax_derivative});
+    auto *nn = new neural_network({2, 2}, {Activation::SOFTMAX});
     matrix inputs(7, 2);
     inputs.data = {0, 1, 1, 0, 2, 3, 3, 2, 1, 2, 2, 1, 100, 10};
     std::vector<int> labels = {0, 1, 0, 1, 0, 1, 1};
@@ -137,7 +137,7 @@ void dataset() {
 
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;
 
-    auto *nn = new neural_network({784, 521, 128, 10}, {relu, relu, softmax}, {relu_derivative, relu_derivative, softmax_derivative});
+    auto *nn = new neural_network({784, 521, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     nn->train(inputs, labels, 60000/20, 0.05, false);
 

@@ -4,13 +4,11 @@
 #include <vector>
 
 #include "matrix.h"
+#include "activation.h"
 
-layer::layer(int size, int size_incoming, std::function<void(std::vector<double>&)> activation,
-             std::function<void(std::vector<double>&)> activation_derivative) {
+layer::layer(int size, int size_incoming, Activation activation) {
     this->size = size;
-    this->size_incoming = size_incoming;
     this->activation = activation;
-    this->activation_derivative = activation_derivative;
     this->weights = std::make_unique<matrix>(matrix(size, size_incoming + 1));
     this->weights->randomize();
     this->weights_delta = std::make_unique<matrix>(matrix(size, size_incoming + 1));
@@ -21,10 +19,10 @@ void layer::forward(const matrix_row_view &input) {
     std::vector<double> result = weights->calc_potentials(input);
 
     auto result_copy = result;
-    this->activation_derivative(result_copy);
+    get_activation_derivative(activation)(result);
     potential_der = std::make_unique<std::vector<double>>(result_copy);
 
-    activation(result);
+    get_activation(activation)(result);
     values = std::make_unique<std::vector<double>>(result);
 }
 

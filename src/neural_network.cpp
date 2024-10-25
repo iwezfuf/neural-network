@@ -7,11 +7,9 @@
 #include "layer.h"
 #include "activation.h"
 
-neural_network::neural_network(std::vector<int> sizes,
-                               std::vector<std::function<void(std::vector<double>&)>> activations,
-                               std::vector<std::function<void(std::vector<double>&)>> activations_derivatives) {
+neural_network::neural_network(std::vector<int> sizes, const std::vector<Activation> &activations) {
     for (size_t i = 1; i < sizes.size(); i++) {
-        layers.emplace_back(sizes[i], sizes[i - 1], activations[i - 1], activations_derivatives[i - 1]);
+        layers.emplace_back(sizes[i], sizes[i - 1], activations[i - 1]);
     }
 }
 
