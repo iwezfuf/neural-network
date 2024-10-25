@@ -21,7 +21,7 @@ void test_and() {
 //    std::cout << "Final weights" << std::endl;
 //    nn->visualize();
 
-    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
+    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 0 && predicted[2] == 0 && predicted[3] == 1) {
         std::cout << "AND test passed" << std::endl;
     } else {
@@ -39,7 +39,7 @@ void test_or() {
     std::vector<int> labels = {0, 1, 1, 1};
     nn->train(inputs, labels, 1000, 0.05, false);
 
-    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
+    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 1) {
         std::cout << "OR test passed" << std::endl;
     } else {
@@ -63,7 +63,7 @@ void test_xor() {
 
     nn->train(inputs, labels, 1000, 0.05, false);
 
-    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
+    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 0) {
         std::cout << "XOR test passed" << std::endl;
     } else {
@@ -81,7 +81,14 @@ void test_larger() {
     std::vector<int> labels = {0, 1, 0, 1, 0, 1, 1};
     nn->train(inputs, labels, 500, 0.05, false);
 
-    std::vector<int> predicted = {nn->predict({0, 1}), nn->predict({1, 0}), nn->predict({2, 3}), nn->predict({3, 2}), nn->predict({1, 2}), nn->predict({2, 1}), nn->predict({100, 10})};
+    //  TODO overload predict to avoid this
+    std::vector<int> predicted = {nn->predict(matrix_row_view( (std::vector<double>) {0, 1})),
+                                  nn->predict(matrix_row_view({1, 0})),
+                                  nn->predict(matrix_row_view({2, 3})),
+                                  nn->predict(matrix_row_view({3, 2})),
+                                  nn->predict(matrix_row_view({1, 2})),
+                                  nn->predict(matrix_row_view({2, 1})),
+                                  nn->predict(matrix_row_view({100, 10}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 0 && predicted[3] == 1 && predicted[4] == 0 && predicted[5] == 1 && predicted[6] == 1) {
         std::cout << "Larger test passed" << std::endl;
     } else {
@@ -128,7 +135,7 @@ void dataset() {
     }
     vectors_stream.close();
 
-    std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() << " vectors." << std::endl;
+    std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;
 
     auto *nn = new neural_network({784, 521, 128, 10}, {relu, relu, softmax}, {relu_derivative, relu_derivative, softmax_derivative});
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
@@ -136,7 +143,7 @@ void dataset() {
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size(); i++) {
-        predicted.push_back(nn->predict({vectors[i]}));
+        predicted.push_back(nn->predict((matrix_row_view(vectors.data() + i * 784, 784))));
     }
 
     // print accuracy

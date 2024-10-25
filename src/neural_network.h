@@ -17,7 +17,7 @@ public:
 
     std::vector<double> logits(const matrix_row_view &input);
 
-    int predict(const std::vector<double>& input);
+    int predict(const matrix_row_view& input);
 
     void visualize();
 

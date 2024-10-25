@@ -27,7 +27,7 @@ std::vector<double> neural_network::logits(const matrix_row_view &input) {
     return get_outputs();
 }
 
-int neural_network::predict(const std::vector<double>& input) {
+int neural_network::predict(const matrix_row_view& input) {
     forward(input);
     return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
 }
