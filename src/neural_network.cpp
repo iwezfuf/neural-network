@@ -50,7 +50,7 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<do
         std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
-            layers[i + 1].optimizer->add_current_example_weight_gradient(*layer.weights_delta, current_weights_delta);
+            layers[i + 1].optimizer->add_current_example_weight_gradient(*layers[i + 1].weights_delta, current_weights_delta);
         }
 
         // compute de_dw
