@@ -8,13 +8,13 @@ void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, doub
 
     // update v
     for (int i = 0; i < v.size(); i++) {
-        v[i] = v[i] * beta2 + weights_delta.data[i] * weights_delta.data[i] * (1 - beta2);
+        v.data[i] = v.data[i] * beta2 + weights_delta.data[i] * weights_delta.data[i] * (1 - beta2);
     }
 
     // Update weights
     for (int i = 0; i < weights.size(); i++) {
         double weights_delta_corrected = weights_delta.data[i] / (1 - pow(beta1, t));
-        double v_corrected = v[i] / (1 - pow(beta2, t));
+        double v_corrected = v.data[i] / (1 - pow(beta2, t));
         weights.data[i] -= learning_rate * weights_delta_corrected / (sqrt(v_corrected) + epsilon);
     }
 

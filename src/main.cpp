@@ -140,7 +140,7 @@ void dataset() {
     auto *nn = new neural_network({784, 521, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     inputs.normalize_data();
-    nn->train(inputs, labels, 60000/20, 0.05, false);
+    nn->train(inputs, labels, 60000/32, 0.05, false);
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size(); i++) {

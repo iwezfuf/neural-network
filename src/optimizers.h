@@ -1,5 +1,7 @@
-#ifndef MAINPROJECT_OPTIMIZERS_H
-#define MAINPROJECT_OPTIMIZERS_H
+#ifndef OPTIMIZERS_OPTIMIZERS_H
+#define OPTIMIZERS_OPTIMIZERS_H
+
+#include "matrix.h"
 
 struct adam_optimizer {
     int t = 0;
@@ -18,4 +20,4 @@ public:
 };
 
 
-#endif //MAINPROJECT_OPTIMIZERS_H
+#endif //OPTIMIZERS_OPTIMIZERS_H
