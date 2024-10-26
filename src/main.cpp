@@ -140,7 +140,6 @@ void dataset() {
     auto *nn = new neural_network({784, 521, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     inputs.normalize_data();
-    nn->train(inputs, labels, 60000/32, 0.05, false);
 
     std::vector<int> predicted;
     for (size_t i = 0; i < vectors.size() / 784; i++) {
@@ -155,7 +154,25 @@ void dataset() {
         }
     }
     double accuracy = static_cast<double>(correct) / labels.size();
-    std::cout << "Accuracy: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
+    std::cout << "Accuracy before train: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
+
+
+    nn->train(inputs, labels, 60000/32, 0.05, false);
+
+    predicted = {};
+    for (size_t i = 0; i < vectors.size() / 784; i++) {
+        predicted.push_back(nn->predict((matrix_row_view(vectors.data() + i * 784, 784))));
+    }
+
+    // print accuracy
+    correct = 0;
+    for (size_t i = 0; i < labels.size(); i++) {
+        if (labels[i] == predicted[i]) {
+            correct++;
+        }
+    }
+    accuracy = static_cast<double>(correct) / labels.size();
+    std::cout << "Accuracy after train: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
 }
 
 int main() {
@@ -164,35 +181,6 @@ int main() {
 //    test_larger();
 //    test_xor();
 
-//    auto *nn = new neural_network({2, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
-//
-//    matrix inputs(4, 2);
-//    inputs.data = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
-//
-//    std::vector<int> labels = {0, 1, 1, 0};
-//
-//    nn->train(inputs, labels, 500, 0.05);
-//
-//    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict({1, 0}), nn->predict({0, 1}), nn->predict({1, 1})};
-//    for (auto& val : predicted) {
-//        std::cout << val << " ";
-//    }
-
     dataset();
     return 0;
 }
-
-//int main() {
-//    auto *nn = new neural_network({1, 1, 2}, {relu, softmax}, {relu_derivative, softmax_derivative});
-//
-//    matrix inputs(2, 1);
-//    inputs.data = {{0}, {1}};
-//
-//    std::vector<int> labels = {0, 1};
-//
-//    nn->train(inputs, labels, 100, 0.1);
-//
-//    std::cout << nn->predict({0}) << std::endl;
-//    std::cout << nn->predict({1}) << std::endl;
-//    return 0;
-//}
