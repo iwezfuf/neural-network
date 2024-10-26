@@ -143,7 +143,7 @@ void dataset() {
     nn->train(inputs, labels, 60000/32, 0.05, false);
 
     std::vector<int> predicted;
-    for (size_t i = 0; i < vectors.size(); i++) {
+    for (size_t i = 0; i < vectors.size() / 784; i++) {
         predicted.push_back(nn->predict((matrix_row_view(vectors.data() + i * 784, 784))));
     }
 
