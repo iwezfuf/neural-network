@@ -22,26 +22,23 @@ matrix::matrix(std::vector<double> data, int rows, int cols) {
 }
 
 void matrix::operator-=(matrix other) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            data[index(i, j)] -= other.data[index(i, j)];
-        }
+    for (int i = 0; i < size(); i++) {
+        data[i] -= other.data[i];
     }
 }
 
 void matrix::operator+=(matrix other) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            data[index(i, j)] += other.data[index(i, j)];
-        }
+    for (int i = 0; i < size(); i++) {
+        data[i] += other.data[i];
     }
 }
 
 void matrix::randomize() {
-    // use He initialization, set bias to 0
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols - 1; j++) {
-            data[index(i, j)] = sample_normal_dist(0, sqrt(2.0 / cols));
+    // use He initialization
+    for (int i = 0; i < size(); i++) {
+        // leave bias at 0
+        if ((i + 1) % cols != 0) {
+            data[i] = sample_normal_dist(0, sqrt(2.0 / cols));
         }
     }
 }
@@ -111,7 +108,7 @@ std::vector<double> compute_de_dy(const std::vector<double> &prev_de_dy, const s
         double factor = prev_de_dy[i] * potential_der[i];
         // skip bias
         for (int j = 0; j < weights.cols - 1; j++) {
-            res[j] += factor * weights.data[weights.index(i, j)];
+            res[j] += factor * weights.data[weights.index(static_cast<int>(i), j)];
         }
     }
     return res;
@@ -126,7 +123,7 @@ inline int matrix::index(int row, int col) const {
 }
 
 void matrix::normalize_data() {
-    // substract mean and divide by standard deviation
+    // subtract mean and divide by standard deviation
     for (int i = 0; i < cols - 1; i++) {
         double sum = 0;
         for (int j = 0; j < rows; j++) {
