@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <random>
-#include <cassert>
 
 #include "layer.h"
 #include "activation.h"
@@ -33,7 +32,7 @@ int neural_network::predict(const matrix_row_view& input) {
 void neural_network::backward(const matrix_row_view &input, const std::vector<double> &label) {
     std::vector<double> &predicted = get_outputs();
     std::vector<double> de_dy(predicted.size());
-    matrix weight_delta = matrix(0, 0);
+    matrix current_weights_delta = matrix(0, 0);
 
     for (int i = static_cast<int>(layers.size()) - 1; i >= 0; i--) {
         auto& layer = layers[i];
@@ -51,7 +50,7 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<do
         std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
-            *layers[i + 1].weights_delta += weight_delta;
+            layers[i + 1].optimizer->add_current_example_weight_gradient(*layer.weights_delta, current_weights_delta);
         }
 
         // compute de_dw
@@ -62,10 +61,10 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<do
             y_vector = new matrix_row_view(layers[i - 1].values->data(), layers[i - 1].size);
         }
         // outer product with 1 added to end of y_vector
-        weight_delta = outer_product(de_dp,*y_vector);
+        current_weights_delta = outer_product(de_dp, *y_vector);
 
         if (i == 0) {
-            *layer.weights_delta += weight_delta;
+            layer.optimizer->add_current_example_weight_gradient(*layer.weights_delta, current_weights_delta);
         }
     }
 }
@@ -149,7 +148,6 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
 //                }
 //            }
             layer.update_weights(learning_rate);
-            layer.zero_weights_delta();
         }
     }
 }

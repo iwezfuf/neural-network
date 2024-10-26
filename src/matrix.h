@@ -40,7 +40,7 @@ public:
 
     void operator+=(matrix other);
 
-    matrix operator*(double scalar);
+    matrix operator*(double scalar) const;
 
     void randomize();
 
@@ -53,6 +53,10 @@ public:
     matrix_row_view get_row(int row) const;
 
     void normalize_data();
+
+    void multiply_by_scalar(double scalar);
+
+    int size() const { return rows * cols; }
 };
 
 void vec_apply(std::vector<double> &vec, const std::function<double(double)>& func);

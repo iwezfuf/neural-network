@@ -7,6 +7,7 @@
 
 #include "matrix.h"
 #include "activation.h"
+#include "optimizers.h"
 
 struct layer {
     int size;
@@ -15,6 +16,7 @@ struct layer {
     std::unique_ptr<matrix> weights_delta;
     std::unique_ptr<std::vector<double>> values;
     std::unique_ptr<std::vector<double>> potential_der;
+    std::unique_ptr<adam_optimizer> optimizer;
 
 public:
     layer(int size, int size_incoming, Activation activation);

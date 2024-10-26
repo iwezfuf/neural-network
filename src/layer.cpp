@@ -5,6 +5,7 @@
 
 #include "matrix.h"
 #include "activation.h"
+#include "optimizers.h"
 
 layer::layer(int size, int size_incoming, Activation activation) {
     this->size = size;
@@ -13,6 +14,7 @@ layer::layer(int size, int size_incoming, Activation activation) {
     this->weights->randomize();
     this->weights_delta = std::make_unique<matrix>(matrix(size, size_incoming + 1));
     this->values = std::make_unique<std::vector<double>>(std::vector<double>(size));
+    this->optimizer = std::make_unique<adam_optimizer>(adam_optimizer(size, size_incoming + 1));
 }
 
 void layer::forward(const matrix_row_view &input) {
@@ -27,9 +29,5 @@ void layer::forward(const matrix_row_view &input) {
 }
 
 void layer::update_weights(double learning_rate) const {
-    *weights -= *weights_delta * learning_rate;
-}
-
-void layer::zero_weights_delta() const {
-    weights_delta->zero();
+    optimizer->update_weights(*weights, *weights_delta, learning_rate);
 }

@@ -37,7 +37,7 @@ void matrix::operator+=(matrix other) {
     }
 }
 
-matrix matrix::operator*(double scalar) {
+matrix matrix::operator*(double scalar) const {
     matrix result(rows, cols);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -151,5 +151,11 @@ void matrix::normalize_data() {
         for (int j = 0; j < rows; j++) {
             data[index(j, i)] = (data[index(j, i)] - mean) / stddev;
         }
+    }
+}
+
+void matrix::multiply_by_scalar(double scalar) {
+    for (int i = 0; i < size(); i++) {
+        data[i] *= scalar;
     }
 }
