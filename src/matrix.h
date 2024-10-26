@@ -40,8 +40,6 @@ public:
 
     void operator+=(matrix other);
 
-    matrix operator*(double scalar) const;
-
     void randomize();
 
     void zero();
@@ -68,5 +66,7 @@ double sample_normal_dist(double mean, double stddev);
 matrix outer_product(const matrix_row_view &vec1, const matrix_row_view &vec2);
 
 std::vector<double> compute_de_dy(const std::vector<double> &prev_de_dy, const std::vector<double> &potential_der, const matrix &weights);
+
+void add_scaled_vector(std::vector<double> &vec, const std::vector<double> &vec_to_add, double scale);
 
 #endif //NEURAL_NETWORK_MATRIX_H

@@ -23,5 +23,5 @@ void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, doub
 }
 
 void adam_optimizer::add_current_example_weight_gradient(matrix &weights_delta, const matrix &current_weights_delta) {
-    weights_delta += current_weights_delta * (1 - beta1);
+    add_scaled_vector(weights_delta.data, current_weights_delta.data, 1 - beta1);
 }

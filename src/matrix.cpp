@@ -37,16 +37,6 @@ void matrix::operator+=(matrix other) {
     }
 }
 
-matrix matrix::operator*(double scalar) const {
-    matrix result(rows, cols);
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            result.data[index(i, j)] = data[index(i, j)] * scalar;
-        }
-    }
-    return result;
-}
-
 void matrix::randomize() {
     // use He initialization, set bias to 0
     for (int i = 0; i < rows; i++) {
@@ -157,5 +147,11 @@ void matrix::normalize_data() {
 void matrix::multiply_by_scalar(double scalar) {
     for (int i = 0; i < size(); i++) {
         data[i] *= scalar;
+    }
+}
+
+void add_scaled_vector(std::vector<double> &vec, const std::vector<double> &vec_to_add, double scale) {
+    for (size_t i = 0; i < vec.size(); i++) {
+        vec[i] += vec_to_add[i] * scale;
     }
 }
