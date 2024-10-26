@@ -83,7 +83,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
 
     for (int i = 0; i < epochs; i++) {
         std::cout << "Epoch: " << i << std::endl;
-        int batch_size = std::min(20, inputs.rows);
+        int batch_size = std::min(32, inputs.rows);
         for (int j = 0; j < batch_size; j++) {
             int index = indices[(i*batch_size + j) % inputs.rows];
 
