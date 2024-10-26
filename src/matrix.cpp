@@ -134,3 +134,22 @@ matrix_row_view matrix::get_row(int row) const {
 inline int matrix::index(int row, int col) const {
     return row * cols + col;
 }
+
+void matrix::normalize_data() {
+    // substract mean and divide by standard deviation
+    for (int i = 0; i < cols - 1; i++) {
+        double sum = 0;
+        for (int j = 0; j < rows; j++) {
+            sum += data[index(j, i)];
+        }
+        double mean = sum / rows;
+        double stddev = 0;
+        for (int j = 0; j < rows; j++) {
+            stddev += (data[index(j, i)] - mean) * (data[index(j, i)] - mean);
+        }
+        stddev = sqrt(stddev / rows);
+        for (int j = 0; j < rows; j++) {
+            data[index(j, i)] = (data[index(j, i)] - mean) / stddev;
+        }
+    }
+}

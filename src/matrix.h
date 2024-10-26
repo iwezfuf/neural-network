@@ -51,6 +51,8 @@ public:
     inline int index(int row, int col) const;
 
     matrix_row_view get_row(int row) const;
+
+    void normalize_data();
 };
 
 void vec_apply(std::vector<double> &vec, const std::function<double(double)>& func);
