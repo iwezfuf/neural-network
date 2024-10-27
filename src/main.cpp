@@ -141,38 +141,12 @@ void dataset() {
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     inputs.normalize_data();
 
-    std::vector<int> predicted;
-    for (size_t i = 0; i < vectors.size() / 784; i++) {
-        predicted.push_back(nn->predict((matrix_row_view(vectors.data() + i * 784, 784))));
-    }
 
-    // print accuracy
-    int correct = 0;
-    for (size_t i = 0; i < labels.size(); i++) {
-        if (labels[i] == predicted[i]) {
-            correct++;
-        }
-    }
-    double accuracy = static_cast<double>(correct) / labels.size();
-    std::cout << "Accuracy before train: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
+    std::cout << "Correct before train: " << nn->correct(inputs, labels) << "%" << std::endl;
 
+    nn->train(inputs, labels, 60000/32*10, 0.001, false);
 
-    nn->train(inputs, labels, 60000/32, 0.05, false);
-
-    predicted = {};
-    for (size_t i = 0; i < vectors.size() / 784; i++) {
-        predicted.push_back(nn->predict((matrix_row_view(vectors.data() + i * 784, 784))));
-    }
-
-    // print accuracy
-    correct = 0;
-    for (size_t i = 0; i < labels.size(); i++) {
-        if (labels[i] == predicted[i]) {
-            correct++;
-        }
-    }
-    accuracy = static_cast<double>(correct) / labels.size();
-    std::cout << "Accuracy after train: " << std::round(accuracy * 1000) / 10 << "%" << std::endl;
+    std::cout << "Correct after train: " << nn->correct(inputs, labels) << std::endl;
 }
 
 int main() {

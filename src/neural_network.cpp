@@ -29,6 +29,16 @@ int neural_network::predict(const matrix_row_view& input) {
     return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
 }
 
+int neural_network::correct(const matrix &inputs, const std::vector<int> &labels) {
+    int correct = 0;
+    for (int i = 0; i < inputs.rows; i++) {
+        if (predict(inputs.get_row(i)) == labels[i]) {
+            correct++;
+        }
+    }
+    return correct;
+}
+
 void neural_network::backward(const matrix_row_view &input, const std::vector<double> &label) {
     std::vector<double> &predicted = get_outputs();
     std::vector<double> de_dy(predicted.size());

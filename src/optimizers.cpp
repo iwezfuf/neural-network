@@ -3,7 +3,7 @@
 #include "optimizers.h"
 #include "matrix.h"
 
-#define no_optimizer false
+#define no_optimizer true
 
 void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, double learning_rate) {
     if (no_optimizer) {

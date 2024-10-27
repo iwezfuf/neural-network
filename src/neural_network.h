@@ -26,6 +26,8 @@ public:
     void train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate, bool debug_mode);
 
     void backward(const matrix_row_view &input, const std::vector<double> &label);
+
+    int correct(const matrix &inputs, const std::vector<int> &labels);
 };
 
 
