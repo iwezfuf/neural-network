@@ -100,8 +100,12 @@ void test_larger() {
 }
 
 void dataset() {
-    const std::string labels_file = "../data/fashion_mnist_train_labels.csv";
-    const std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
+    std::string labels_file = "../data/fashion_mnist_train_labels.csv";
+    std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
+    if (true) {
+        labels_file = "../data/mnist_digits/train_labels.csv";
+        vectors_file = "../data/mnist_digits/train_images.csv";
+    }
 
     std::vector<int> labels;
     std::vector<double> vectors;
