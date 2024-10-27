@@ -21,7 +21,7 @@ void test_and() {
 //    std::cout << "Final weights" << std::endl;
 //    nn->visualize();
 
-    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
+    std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 0 && predicted[2] == 0 && predicted[3] == 1) {
         std::cout << "AND test passed" << std::endl;
     } else {
@@ -39,7 +39,7 @@ void test_or() {
     std::vector<int> labels = {0, 1, 1, 1};
     nn->train(inputs, labels, 1000, 0.05, false);
 
-    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
+    std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 1) {
         std::cout << "OR test passed" << std::endl;
     } else {
@@ -63,7 +63,7 @@ void test_xor() {
 
     nn->train(inputs, labels, 1000, 0.05, false);
 
-    std::vector<int> predicted = {nn->predict({0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
+    std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 0) {
         std::cout << "XOR test passed" << std::endl;
     } else {
@@ -153,11 +153,11 @@ void dataset() {
 }
 
 int main() {
-//    test_and();
-//    test_or();
-//    test_larger();
-//    test_xor();
+    test_and();
+    test_or();
+    test_larger();
+    test_xor();
 
-    dataset();
+//    dataset();
     return 0;
 }
