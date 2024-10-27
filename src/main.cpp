@@ -141,14 +141,13 @@ void dataset() {
 
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;
 
-    auto *nn = new neural_network({784, 521, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
+    auto *nn = new neural_network({784, 200, 80, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     inputs.normalize_data();
 
-
     std::cout << "Correct before train: " << nn->correct(inputs, labels) << std::endl;
 
-    nn->train(inputs, labels, 60000/32*10, 0.01, false);
+    nn->train(inputs, labels, 60000/32*3, 0.01, false);
 
     std::cout << "Correct after train: " << nn->correct(inputs, labels) << std::endl;
 }
