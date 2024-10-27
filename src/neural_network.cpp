@@ -26,7 +26,28 @@ std::vector<double> neural_network::logits(const matrix_row_view &input) {
 
 int neural_network::predict(const matrix_row_view& input) {
     forward(input);
-    return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
+    // TODO: not sure if we need to do this
+    // If the highest output values are very close, choose randomly between them
+    double delta = 0.001;
+    std::vector<double> outputs = get_outputs();
+    std::vector<size_t> max_indices;
+    double max_value = outputs[0];
+    for (size_t i = 1; i < outputs.size(); i++) {
+        if (std::abs(outputs[i] - max_value) < delta) {
+            max_indices.push_back(i);
+        } else if (outputs[i] > max_value) {
+            max_value = outputs[i];
+            max_indices.clear();
+            max_indices.push_back(i);
+        }
+    }
+    if (max_indices.size() == 1) {
+        return static_cast<int>(max_indices[0]);
+    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, static_cast<int>(max_indices.size()) - 1);
+    return static_cast<int>(max_indices[dis(gen)]);
 }
 
 int neural_network::correct(const matrix &inputs, const std::vector<int> &labels) {
