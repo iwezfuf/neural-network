@@ -10,6 +10,7 @@ void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, doub
         for (int i = 0; i < weights.size(); i++) {
             weights.data[i] -= learning_rate * weights_delta.data[i];
         }
+        weights_delta.zero();
         return;
     }
     t++;

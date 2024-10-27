@@ -148,7 +148,7 @@ void dataset() {
 
     std::cout << "Correct before train: " << nn->correct(inputs, labels) << std::endl;
 
-    nn->train(inputs, labels, 60000/32*10, 0.001, false);
+    nn->train(inputs, labels, 60000/32*10, 0.01, false);
 
     std::cout << "Correct after train: " << nn->correct(inputs, labels) << std::endl;
 }
