@@ -3,7 +3,15 @@
 #include "optimizers.h"
 #include "matrix.h"
 
+#define no_optimizer false
+
 void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, double learning_rate) {
+    if (no_optimizer) {
+        for (int i = 0; i < weights.size(); i++) {
+            weights.data[i] -= learning_rate * weights_delta.data[i];
+        }
+        return;
+    }
     t++;
 
     // update v
@@ -23,5 +31,11 @@ void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, doub
 }
 
 void adam_optimizer::add_current_example_weight_gradient(matrix &weights_delta, const matrix &current_weights_delta) {
+    if (no_optimizer) {
+        for (int i = 0; i < weights_delta.size(); i++) {
+            weights_delta.data[i] += current_weights_delta.data[i];
+        }
+        return;
+    }
     add_scaled_vector(weights_delta.data, current_weights_delta.data, 1 - beta1);
 }
