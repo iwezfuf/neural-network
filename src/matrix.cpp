@@ -134,7 +134,7 @@ void matrix::normalize_data() {
         for (int j = 0; j < rows; j++) {
             stddev += (data[index(j, i)] - mean) * (data[index(j, i)] - mean);
         }
-        stddev = sqrt(stddev / rows);
+        stddev = sqrt(stddev / rows) + 1e-9;
         for (int j = 0; j < rows; j++) {
             data[index(j, i)] = (data[index(j, i)] - mean) / stddev;
         }
