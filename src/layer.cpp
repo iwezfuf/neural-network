@@ -21,7 +21,7 @@ void layer::forward(const matrix_row_view &input) {
     std::vector<double> result = weights->calc_potentials(input);
 
     auto result_copy = result;
-    get_activation_derivative(activation)(result);
+    get_activation_derivative(activation)(result_copy);
     potential_der = std::make_unique<std::vector<double>>(result_copy);
 
     get_activation(activation)(result);
