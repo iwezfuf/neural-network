@@ -113,7 +113,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
     std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device()()));
 
     for (int i = 0; i < epochs; i++) {
-//        std::cout << "Epoch: " << i << std::endl;
+        std::cout << "Epoch: " << i << std::endl;
         int batch_size = std::min(32, inputs.rows);
         for (int j = 0; j < batch_size; j++) {
             int index = indices[(i*batch_size + j) % inputs.rows];
