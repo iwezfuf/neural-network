@@ -119,7 +119,7 @@ are four data files included:
     very inappropriate. Don't make unnecessary copies.
   - Objects are fine, but be careful about the depth of the object hierarchy you
     are going to create. Always remember that you are trying to be fast.
-  - Double precision is fine. You may try to use doubles. Do not use BigDecimal
+  - Double precision is fine. You may try to use floats. Do not use BigDecimal
     or any other high-precision objects.
   - Don't forget to use compiler optimizations (e.g. -O3 or -Ofast)
   - Simple SGD is most likely not fast enough, you are going to need to
