@@ -181,6 +181,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
 //            }
             layer.update_weights(learning_rate);
         }
+//        visualize();
     }
 }
 
@@ -191,10 +192,9 @@ void neural_network::visualize() {
         for (int j = 0; j < layer.weights->rows; j++) {
             for (int k = 0; k < layer.weights->cols; k++) {
                 if (k == layer.weights->cols - 1) {
-                    // TODO
-//                    std::cout << "Bias: " << layer.weights->data[layer.weights->index(j, k)] << " ";
+                    std::cout << "Bias: " << layer.weights->data[layer.weights->cols * j + k] << " ";
                 } else {
-//                    std::cout << "Weight " << j << " " << k << ": " << layer.weights->data[layer.weights->index(j, k)] << "         ";
+                    std::cout << "Weight " << j << " " << k << ": " << layer.weights->data[layer.weights->cols * j + k] << "         ";
                 }
             }
             std::cout << std::endl;
