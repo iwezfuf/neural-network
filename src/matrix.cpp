@@ -92,11 +92,11 @@ matrix outer_product(const matrix_row_view &vec1, const matrix_row_view &vec2) {
     matrix result(static_cast<int>(vec1.size), static_cast<int>(vec2.size + 1));
     for (size_t i = 0; i < vec1.size; i++) {
         for (size_t j = 0; j < vec2.size; j++) {
-            result.data[result.index(i, j)] = vec1[i] * vec2[j];
+            result.data[result.index(static_cast<int>(i), static_cast<int>(j))] = vec1[i] * vec2[j];
         }
     }
     for (size_t i = 0; i < vec1.size; i++) {
-        result.data[result.index(i, vec2.size)] = vec1[i];
+        result.data[result.index(static_cast<int>(i), static_cast<int>(vec2.size))] = vec1[i];
     }
     return result;
 }

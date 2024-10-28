@@ -13,8 +13,6 @@ struct neural_network {
 public:
     neural_network(std::vector<int> sizes, const std::vector<Activation> &activations);
 
-    std::vector<double> logits(const matrix_row_view &input);
-
     int predict(const matrix_row_view& input);
 
     void visualize();
@@ -23,7 +21,7 @@ public:
 
     std::vector<double>& get_outputs();
 
-    void train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate, bool debug_mode);
+    void train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate);
 
     void backward(const matrix_row_view &input, const std::vector<double> &label);
 

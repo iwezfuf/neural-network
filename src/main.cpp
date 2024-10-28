@@ -13,22 +13,14 @@ void test_and() {
     matrix inputs(4, 2);
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 0, 0, 1};
-    // print initial weights
-//    std::cout << "Initial weights" << std::endl;
-//    nn->visualize();
-    nn->train(inputs, labels, 1000, 0.05, false);
-    // print final weights
-//    std::cout << "Final weights" << std::endl;
-//    nn->visualize();
+
+    nn->train(inputs, labels, 1000, 0.05);
 
     std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 0 && predicted[2] == 0 && predicted[3] == 1) {
         std::cout << "AND test passed" << std::endl;
     } else {
         std::cout << "AND test failed" << std::endl;
-    }
-    for (size_t i = 0; i < labels.size(); i++) {
-//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
@@ -37,16 +29,13 @@ void test_or() {
     matrix inputs(4, 2);
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 1, 1, 1};
-    nn->train(inputs, labels, 1000, 0.05, false);
+    nn->train(inputs, labels, 1000, 0.05);
 
     std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 1) {
         std::cout << "OR test passed" << std::endl;
     } else {
         std::cout << "OR test failed" << std::endl;
-    }
-    for (size_t i = 0; i < labels.size(); i++) {
-//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
@@ -57,20 +46,13 @@ void test_xor() {
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
     std::vector<int> labels = {0, 1, 1, 0};
 
-//    matrix inputs(1, 2);
-//    inputs.data = {{1, 0}};
-//    std::vector<int> labels = {1};
-
-    nn->train(inputs, labels, 1000, 0.05, false);
+    nn->train(inputs, labels, 1000, 0.05);
 
     std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 0) {
         std::cout << "XOR test passed" << std::endl;
     } else {
         std::cout << "XOR test failed" << std::endl;
-    }
-    for (size_t i = 0; i < labels.size(); i++) {
-//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
     }
 }
 
@@ -79,9 +61,8 @@ void test_larger() {
     matrix inputs(7, 2);
     inputs.data = {0, 1, 1, 0, 2, 3, 3, 2, 1, 2, 2, 1, 100, 10};
     std::vector<int> labels = {0, 1, 0, 1, 0, 1, 1};
-    nn->train(inputs, labels, 500, 0.05, false);
+    nn->train(inputs, labels, 500, 0.05);
 
-    //  TODO overload predict to avoid this
     std::vector<int> predicted = {nn->predict(matrix_row_view( (std::vector<double>) {0, 1})),
                                   nn->predict(matrix_row_view({1, 0})),
                                   nn->predict(matrix_row_view({2, 3})),
@@ -92,14 +73,11 @@ void test_larger() {
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 0 && predicted[3] == 1 && predicted[4] == 0 && predicted[5] == 1 && predicted[6] == 1) {
         std::cout << "Larger test passed" << std::endl;
     } else {
-        std::cout << "Larger test failed, outputs: " << std::endl;
-    }
-    for (size_t i = 0; i < labels.size(); i++) {
-//        std::cout << "Expected: " << labels[i] << " Logit for 0: " << nn->logits(inputs.data[i])[0] << " Logit for 1: " << nn->logits(inputs.data[i])[1] << " Predicted: " << predicted[i] << std::endl;
+        std::cout << "Larger test failed" << std::endl;
     }
 }
 
-void load_dataset(std::string labels_file, std::string vectors_file, std::vector<int> &labels, std::vector<double> &vectors) {
+void load_dataset(const std::string& labels_file, const std::string& vectors_file, std::vector<int> &labels, std::vector<double> &vectors) {
     std::ifstream labels_stream(labels_file);
     if (!labels_stream.is_open()) {
         std::cerr << "Failed to open labels file: " << labels_file << std::endl;
@@ -135,12 +113,12 @@ void dataset() {
     std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
     std::string test_labels_file = "../data/fashion_mnist_test_labels.csv";
     std::string test_vectors_file = "../data/fashion_mnist_test_vectors.csv";
-    if (false) {
-        labels_file = "../data/mnist_digits/train_labels.csv";
-        vectors_file = "../data/mnist_digits/train_images.csv";
-        test_labels_file = "../data/mnist_digits/test_labels.csv";
-        test_vectors_file = "../data/mnist_digits/test_images.csv";
-    }
+
+//    labels_file = "../data/mnist_digits/train_labels.csv";
+//    vectors_file = "../data/mnist_digits/train_images.csv";
+//    test_labels_file = "../data/mnist_digits/test_labels.csv";
+//    test_vectors_file = "../data/mnist_digits/test_images.csv";
+
 
     std::vector<int> labels;
     std::vector<double> vectors;
@@ -163,7 +141,7 @@ void dataset() {
 
     std::cout << "Accuracy before train: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 
-    nn->train(inputs, labels, 60000/32, 0.001, false);
+    nn->train(inputs, labels, 60000/32, 0.001);
 
     std::cout << "Accuracy after train: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 }

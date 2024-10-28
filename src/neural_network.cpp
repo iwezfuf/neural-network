@@ -19,36 +19,9 @@ void neural_network::forward(const matrix_row_view &input) {
     }
 }
 
-std::vector<double> neural_network::logits(const matrix_row_view &input) {
-    forward(input);
-    return get_outputs();
-}
-
 int neural_network::predict(const matrix_row_view& input) {
     forward(input);
     return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
-//    // TODO: not sure if we need to do this
-//    // If the highest output values are very close, choose randomly between them
-//    double delta = 0.001;
-//    std::vector<double> outputs = get_outputs();
-//    std::vector<size_t> max_indices;
-//    double max_value = outputs[0];
-//    for (size_t i = 1; i < outputs.size(); i++) {
-//        if (std::abs(outputs[i] - max_value) < delta) {
-//            max_indices.push_back(i);
-//        } else if (outputs[i] > max_value) {
-//            max_value = outputs[i];
-//            max_indices.clear();
-//            max_indices.push_back(i);
-//        }
-//    }
-//    if (max_indices.size() == 1) {
-//        return static_cast<int>(max_indices[0]);
-//    }
-//    std::random_device rd;
-//    std::mt19937 gen(rd());
-//    std::uniform_int_distribution<> dis(0, static_cast<int>(max_indices.size()) - 1);
-//    return static_cast<int>(max_indices[dis(gen)]);
 }
 
 int neural_network::accuracy(const matrix &inputs, const std::vector<int> &labels) {
@@ -101,12 +74,7 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<do
     }
 }
 
-void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate, bool debug_mode) {
-    if (debug_mode) {
-        std::cout << "BEFORE" << std::endl;
-        visualize();
-    }
-
+void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate) {
     // sort inputs and labels randomly
     std::vector<int> indices(inputs.rows);
     std::iota(indices.begin(), indices.end(), 0);
@@ -120,70 +88,16 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
         for (int j = 0; j < batch_size; j++) {
             int index = indices[(i*batch_size + j) % inputs.rows];
 
-//            if (j > 0 && (i * 20 + j) % 100 == 0) {
-//                std::cout << "Example number: " << i * 20 + j << std::endl;
-//            }
-//            if (j > 10000) break;
             const matrix_row_view &input = inputs.get_row(index);
             std::vector<double> label(layers.back().size, 0);
             label[labels[index]] = 1;
 
             forward(input);
             backward(input, label);
-
-            // print weight gradients
-//            std::cout << "Input: " << input[0] << " " << input[1] << " Logit for 0: " << logits(inputs.data[j])[0] << " Logit for 1: " << logits(inputs.data[j])[1];
-//            std::cout << std::endl;
-//            for (auto& layer : layers) {
-//                for (int k = 0; k < layer.weights_delta->rows; k++) {
-//                    for (int l = 0; l < layer.weights_delta->cols; l++) {
-//                        if (l == layer.weights_delta->cols - 1) {
-//                            std::cout << "Bias: " << layer.weights_delta->data[k][l] << " ";
-//                        } else {
-//                            std::cout << "Weight " << k << " " << l << ": " << layer.weights_delta->data[k][l]
-//                                      << "         ";
-//                        }
-//                        std::cout << std::endl;
-//                    }
-//                }
-//            }
-
-
-            if (debug_mode) {
-                std::cout << "AFTER epoch: " << i << " Example: [ ";
-                for (auto &val: input) {
-                    std::cout << val << " ";
-                }
-                std::cout << "] Predicted: [ ";
-                for (auto &val: *layers[layers.size() - 1].values) {
-                    std::cout << val << " ";
-                }
-                std::cout << "] Label: [ ";
-                for (auto &val: label) {
-                    std::cout << val << " ";
-                }
-                std::cout << "]" << std::endl;
-                visualize();
-                std::cout << std::endl;
-            }
-//            break;
         }
         for (auto& layer : layers) {
-//            // print weight gradients
-//            for (int k = 0; k < layer.weights_delta->rows; k++) {
-//                for (int l = 0; l < layer.weights_delta->cols; l++) {
-//                    if (l == layer.weights_delta->cols - 1) {
-//                        std::cout << "Bias: " << layer.weights_delta->data[k][l] << " ";
-//                    } else {
-//                        std::cout << "Weight " << k << " " << l << ": " << layer.weights_delta->data[k][l]
-//                                  << "         ";
-//                    }
-//                    std::cout << std::endl;
-//                }
-//            }
             layer.update_weights(learning_rate);
         }
-//        visualize();
     }
 }
 
