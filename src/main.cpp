@@ -99,17 +99,7 @@ void test_larger() {
     }
 }
 
-void dataset() {
-    std::string labels_file = "../data/fashion_mnist_train_labels.csv";
-    std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
-    if (true) {
-        labels_file = "../data/mnist_digits/train_labels.csv";
-        vectors_file = "../data/mnist_digits/train_images.csv";
-    }
-
-    std::vector<int> labels;
-    std::vector<double> vectors;
-
+void load_dataset(std::string labels_file, std::string vectors_file, std::vector<int> &labels, std::vector<double> &vectors) {
     std::ifstream labels_stream(labels_file);
     if (!labels_stream.is_open()) {
         std::cerr << "Failed to open labels file: " << labels_file << std::endl;
@@ -138,18 +128,44 @@ void dataset() {
         }
     }
     vectors_stream.close();
+}
+
+void dataset() {
+    std::string labels_file = "../data/fashion_mnist_train_labels.csv";
+    std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
+    std::string test_labels_file = "../data/fashion_mnist_test_labels.csv";
+    std::string test_vectors_file = "../data/fashion_mnist_test_vectors.csv";
+    if (false) {
+        labels_file = "../data/mnist_digits/train_labels.csv";
+        vectors_file = "../data/mnist_digits/train_images.csv";
+        test_labels_file = "../data/mnist_digits/test_labels.csv";
+        test_vectors_file = "../data/mnist_digits/test_images.csv";
+    }
+
+    std::vector<int> labels;
+    std::vector<double> vectors;
+    load_dataset(labels_file, vectors_file, labels, vectors);
+
+    std::vector<int> test_labels;
+    std::vector<double> test_vectors;
+    load_dataset(test_labels_file, test_vectors_file, test_labels, test_vectors);
 
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;
+    std::cout << "Loaded " << test_labels.size() << " test labels and " << test_vectors.size() / 784 << " test vectors." << std::endl;
 
     auto *nn = new neural_network({784, 200, 80, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
+
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     inputs.normalize_data();
 
-    std::cout << "Correct before train: " << nn->correct(inputs, labels) << std::endl;
+    matrix test_inputs(test_vectors, static_cast<int>(test_vectors.size() / 784), 784);
+    test_inputs.normalize_data();
+
+    std::cout << "Accuracy before train: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 
     nn->train(inputs, labels, 60000/32, 0.001, false);
 
-    std::cout << "Correct after train: " << nn->correct(inputs, labels) << std::endl;
+    std::cout << "Accuracy after train: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 }
 
 int main() {

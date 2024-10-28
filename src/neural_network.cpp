@@ -51,14 +51,14 @@ int neural_network::predict(const matrix_row_view& input) {
 //    return static_cast<int>(max_indices[dis(gen)]);
 }
 
-int neural_network::correct(const matrix &inputs, const std::vector<int> &labels) {
+int neural_network::accuracy(const matrix &inputs, const std::vector<int> &labels) {
     int correct = 0;
     for (int i = 0; i < inputs.rows; i++) {
         if (predict(inputs.get_row(i)) == labels[i]) {
             correct++;
         }
     }
-    return correct;
+    return correct * 100 / inputs.rows;
 }
 
 void neural_network::backward(const matrix_row_view &input, const std::vector<double> &label) {
@@ -113,7 +113,9 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
     std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device()()));
 
     for (int i = 0; i < epochs; i++) {
-        std::cout << "Epoch: " << i << std::endl;
+        if (i % 100 == 0)
+            std::cout << "Epoch: " << i << std::endl;
+
         int batch_size = std::min(32, inputs.rows);
         for (int j = 0; j < batch_size; j++) {
             int index = indices[(i*batch_size + j) % inputs.rows];

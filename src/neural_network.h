@@ -27,7 +27,7 @@ public:
 
     void backward(const matrix_row_view &input, const std::vector<double> &label);
 
-    int correct(const matrix &inputs, const std::vector<int> &labels);
+    int accuracy(const matrix &inputs, const std::vector<int> &labels);
 };
 
 
