@@ -51,7 +51,7 @@ void test_or() {
 }
 
 void test_xor() {
-    auto *nn = new neural_network({2, 8, 8, 2}, {Activation::RELU, Activation::RELU});
+    auto *nn = new neural_network({2, 8, 8, 2}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
 
     matrix inputs(4, 2);
     inputs.data = {0, 0, 1, 0, 0, 1, 1, 1};
