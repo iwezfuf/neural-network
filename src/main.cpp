@@ -33,7 +33,7 @@ void load_dataset(const std::string& labels_file, const std::string& vectors_fil
         std::string value;
 
         while (std::getline(ss, value, ',')) {
-            vectors.push_back(std::stod(value));
+            vectors.push_back(std::stof(value));
         }
     }
     vectors_stream.close();
