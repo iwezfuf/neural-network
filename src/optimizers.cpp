@@ -36,9 +36,7 @@ void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, floa
 
 void adam_optimizer::add_current_example_weight_gradient(matrix &weights_delta, const matrix &current_weights_delta) {
     if (no_optimizer) {
-        for (int i = 0; i < weights_delta.size(); i++) {
-            weights_delta.data[i] += current_weights_delta.data[i];
-        }
+        weights_delta += current_weights_delta;
         return;
     }
     add_scaled_vector(weights_delta.data, current_weights_delta.data, beta1);
