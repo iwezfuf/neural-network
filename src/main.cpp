@@ -3,7 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <cmath>
 #include "neural_network.h"
 #include "matrix.h"
 #include "activation.h"
@@ -71,7 +70,8 @@ void train_mnist() {
 
     nn->train(inputs, labels, 60000/32, 0.001);
 
-    std::cout << "Accuracy after train: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
+    nn->predict_to_file(test_inputs, "predictions.csv");
+    std::cout << "Accuracy: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 }
 
 int main() {

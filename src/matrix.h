@@ -58,18 +58,17 @@ public:
         data.resize(rows * cols, 0);
     }
 
-    inline void operator-=(matrix other) {
+    inline void operator-=(const matrix &other) {
         for (int i = 0; i < size(); i++) {
             data[i] -= other.data[i];
         }
     }
 
-    inline void operator+=(matrix other) {
+    inline void operator+=(const matrix &other) {
         for (int i = 0; i < size(); i++) {
             data[i] += other.data[i];
         }
     }
-
 
     inline void randomize() {
         // use He initialization

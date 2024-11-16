@@ -6,7 +6,6 @@
 #define no_optimizer true
 
 void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, float learning_rate) {
-    // TODO
     if (no_optimizer) {
         for (int i = 0; i < weights.size(); i++) {
             weights.data[i] -= learning_rate * weights_delta.data[i];

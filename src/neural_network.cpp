@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <random>
+#include <numeric>
+#include <fstream>
 
 #include "layer.h"
 #include "activation.h"
@@ -32,6 +34,16 @@ int neural_network::accuracy(const matrix &inputs, const std::vector<int> &label
         }
     }
     return correct * 100 / inputs.rows;
+}
+
+void neural_network::predict_to_file(const matrix &inputs, const std::string& filename) {
+    std::string to_write;
+    for (int i = 0; i < inputs.rows; i++) {
+        to_write += std::to_string(predict(inputs.get_row(i))) + "\n";
+    }
+    std::ofstream file(filename);
+    file << to_write;
+    file.close();
 }
 
 void neural_network::backward(const matrix_row_view &input, const std::vector<float> &label) {
