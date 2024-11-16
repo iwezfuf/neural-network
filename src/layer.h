@@ -14,8 +14,8 @@ struct layer {
     Activation activation;
     std::unique_ptr<matrix> weights;
     std::unique_ptr<matrix> weights_delta;
-    std::unique_ptr<std::vector<double>> values;
-    std::unique_ptr<std::vector<double>> potential_der;
+    std::unique_ptr<std::vector<float>> values;
+    std::unique_ptr<std::vector<float>> potential_der;
     std::unique_ptr<adam_optimizer> optimizer;
 
 public:
@@ -23,7 +23,7 @@ public:
 
     void forward(const matrix_row_view &input);
 
-    void update_weights(double learning_rate) const;
+    void update_weights(float learning_rate) const;
 
     void zero_weights_delta() const;
 };

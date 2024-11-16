@@ -34,9 +34,9 @@ int neural_network::accuracy(const matrix &inputs, const std::vector<int> &label
     return correct * 100 / inputs.rows;
 }
 
-void neural_network::backward(const matrix_row_view &input, const std::vector<double> &label) {
-    std::vector<double> &predicted = get_outputs();
-    std::vector<double> de_dy(predicted.size());
+void neural_network::backward(const matrix_row_view &input, const std::vector<float> &label) {
+    std::vector<float> &predicted = get_outputs();
+    std::vector<float> de_dy(predicted.size());
     matrix current_weights_delta = matrix(0, 0);
 
     for (int i = static_cast<int>(layers.size()) - 1; i >= 0; i--) {
@@ -52,7 +52,7 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<do
         }
 
         // compute de_dp = de_dy * potential (elementwise_mul)
-        std::vector<double> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
+        std::vector<float> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
             layers[i + 1].optimizer->add_current_example_weight_gradient(*layers[i + 1].weights_delta, current_weights_delta);
@@ -74,7 +74,7 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<do
     }
 }
 
-void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, double learning_rate) {
+void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, float learning_rate) {
     // sort inputs and labels randomly
     std::vector<int> indices(inputs.rows);
     std::iota(indices.begin(), indices.end(), 0);
@@ -89,7 +89,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
             int index = indices[(i*batch_size + j) % inputs.rows];
 
             const matrix_row_view &input = inputs.get_row(index);
-            std::vector<double> label(layers.back().size, 0);
+            std::vector<float> label(layers.back().size, 0);
             label[labels[index]] = 1;
 
             forward(input);
@@ -119,6 +119,6 @@ void neural_network::visualize() {
     }
 }
 
-std::vector<double> &neural_network::get_outputs() {
+std::vector<float> &neural_network::get_outputs() {
     return *layers[layers.size() - 1].values;
 }

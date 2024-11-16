@@ -16,7 +16,7 @@ void test_and() {
 
     nn->train(inputs, labels, 1000, 0.05);
 
-    std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
+    std::vector<int> predicted = {nn->predict((std::vector<float>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<float>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 0 && predicted[2] == 0 && predicted[3] == 1) {
         std::cout << "AND test passed" << std::endl;
     } else {
@@ -31,7 +31,7 @@ void test_or() {
     std::vector<int> labels = {0, 1, 1, 1};
     nn->train(inputs, labels, 1000, 0.05);
 
-    std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
+    std::vector<int> predicted = {nn->predict((std::vector<float>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<float>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 1) {
         std::cout << "OR test passed" << std::endl;
     } else {
@@ -48,7 +48,7 @@ void test_xor() {
 
     nn->train(inputs, labels, 1000, 0.05);
 
-    std::vector<int> predicted = {nn->predict((std::vector<double>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<double>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
+    std::vector<int> predicted = {nn->predict((std::vector<float>) {0, 0}), nn->predict(matrix_row_view({1, 0})), nn->predict(matrix_row_view((std::vector<float>) {0, 1})), nn->predict(matrix_row_view({1, 1}))};
     if (predicted[0] == 0 && predicted[1] == 1 && predicted[2] == 1 && predicted[3] == 0) {
         std::cout << "XOR test passed" << std::endl;
     } else {
@@ -63,7 +63,7 @@ void test_larger() {
     std::vector<int> labels = {0, 1, 0, 1, 0, 1, 1};
     nn->train(inputs, labels, 500, 0.05);
 
-    std::vector<int> predicted = {nn->predict(matrix_row_view( (std::vector<double>) {0, 1})),
+    std::vector<int> predicted = {nn->predict(matrix_row_view( (std::vector<float>) {0, 1})),
                                   nn->predict(matrix_row_view({1, 0})),
                                   nn->predict(matrix_row_view({2, 3})),
                                   nn->predict(matrix_row_view({3, 2})),
@@ -77,7 +77,7 @@ void test_larger() {
     }
 }
 
-void load_dataset(const std::string& labels_file, const std::string& vectors_file, std::vector<int> &labels, std::vector<double> &vectors) {
+void load_dataset(const std::string& labels_file, const std::string& vectors_file, std::vector<int> &labels, std::vector<float> &vectors) {
     std::ifstream labels_stream(labels_file);
     if (!labels_stream.is_open()) {
         std::cerr << "Failed to open labels file: " << labels_file << std::endl;
@@ -121,11 +121,11 @@ void dataset() {
 
 
     std::vector<int> labels;
-    std::vector<double> vectors;
+    std::vector<float> vectors;
     load_dataset(labels_file, vectors_file, labels, vectors);
 
     std::vector<int> test_labels;
-    std::vector<double> test_vectors;
+    std::vector<float> test_vectors;
     load_dataset(test_labels_file, test_vectors_file, test_labels, test_vectors);
 
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;

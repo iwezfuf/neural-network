@@ -6,33 +6,33 @@
 
 class matrix_row_view {
 private:
-    const double* data;
+    const float* data;
 public:
     size_t size;
 
-    matrix_row_view(const double* data, size_t size) : data(data), size(size) {}
+    matrix_row_view(const float* data, size_t size) : data(data), size(size) {}
 
-    matrix_row_view(const std::vector<double>& vec) : data(vec.data()), size(vec.size()) {}
+    matrix_row_view(const std::vector<float>& vec) : data(vec.data()), size(vec.size()) {}
 
-    double& operator[](size_t index);
+    float& operator[](size_t index);
 
-    const double& operator[](size_t index) const;
+    const float& operator[](size_t index) const;
 
-    const double* begin() { return data; }
-    const double* end() { return data + size; }
-    const double* begin() const { return data; }
-    const double* end() const { return data + size; }
+    const float* begin() { return data; }
+    const float* end() { return data + size; }
+    const float* begin() const { return data; }
+    const float* end() const { return data + size; }
 
     size_t length() const { return size; }
 };
 
 
 struct matrix {
-    matrix(std::vector<double> data, int rows, int cols);
+    matrix(std::vector<float> data, int rows, int cols);
 
     int rows;
     int cols;
-    std::vector<double> data;
+    std::vector<float> data;
 public:
     matrix(int rows, int cols);
 
@@ -44,7 +44,7 @@ public:
 
     void zero();
 
-    std::vector<double> calc_potentials(const matrix_row_view &vec);
+    std::vector<float> calc_potentials(const matrix_row_view &vec);
 
     inline int index(int row, int col) const;
 
@@ -52,21 +52,21 @@ public:
 
     void normalize_data();
 
-    void multiply_by_scalar(double scalar);
+    void multiply_by_scalar(float scalar);
 
     int size() const { return rows * cols; }
 };
 
-void vec_apply(std::vector<double> &vec, const std::function<double(double)>& func);
+void vec_apply(std::vector<float> &vec, const std::function<float(float)>& func);
 
-std::vector<double> vec_elementwise_mul(std::vector<double>& vec1, std::vector<double>& vec2);
+std::vector<float> vec_elementwise_mul(std::vector<float>& vec1, std::vector<float>& vec2);
 
-double sample_normal_dist(double mean, double stddev);
+float sample_normal_dist(float mean, float stddev);
 
 matrix outer_product(const matrix_row_view &vec1, const matrix_row_view &vec2);
 
-std::vector<double> compute_de_dy(const std::vector<double> &prev_de_dy, const std::vector<double> &potential_der, const matrix &weights);
+std::vector<float> compute_de_dy(const std::vector<float> &prev_de_dy, const std::vector<float> &potential_der, const matrix &weights);
 
-void add_scaled_vector(std::vector<double> &vec, const std::vector<double> &vec_to_add, double scale);
+void add_scaled_vector(std::vector<float> &vec, const std::vector<float> &vec_to_add, float scale);
 
 #endif //NEURAL_NETWORK_MATRIX_H

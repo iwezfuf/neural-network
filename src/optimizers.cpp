@@ -5,7 +5,7 @@
 
 #define no_optimizer true
 
-void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, double learning_rate) {
+void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, float learning_rate) {
     // TODO
     if (no_optimizer) {
         for (int i = 0; i < weights.size(); i++) {
@@ -23,8 +23,8 @@ void adam_optimizer::update_weights(matrix& weights, matrix& weights_delta, doub
 
     // Update weights
     for (int i = 0; i < weights.size(); i++) {
-        double weights_delta_corrected = weights_delta.data[i] / (1 - pow(beta1, t));
-        double v_corrected = v.data[i] / (1 - pow(beta2, t));
+        float weights_delta_corrected = weights_delta.data[i] / (1 - pow(beta1, t));
+        float v_corrected = v.data[i] / (1 - pow(beta2, t));
         weights.data[i] -= learning_rate * weights_delta_corrected / (sqrt(v_corrected) + epsilon);
 
 //        weights.data[i] -= learning_rate * weights_delta.data[i];
