@@ -60,7 +60,7 @@ void train_mnist() {
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;
     std::cout << "Loaded " << test_labels.size() << " test labels and " << test_vectors.size() / 784 << " test vectors." << std::endl;
 
-    auto *nn = new neural_network({784, 512, 256, 128, 10}, {Activation::RELU, Activation::RELU, Activation::RELU, Activation::SOFTMAX});
+    auto *nn = new neural_network({784, 256, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
 
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
     inputs.normalize_data();
