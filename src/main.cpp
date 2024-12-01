@@ -39,15 +39,15 @@ void load_dataset(const std::string& labels_file, const std::string& vectors_fil
 }
 
 void train_mnist() {
-    std::string labels_file = "../data/fashion_mnist_train_labels.csv";
-    std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
-    std::string test_labels_file = "../data/fashion_mnist_test_labels.csv";
-    std::string test_vectors_file = "../data/fashion_mnist_test_vectors.csv";
+    std::string labels_file = "data/fashion_mnist_train_labels.csv";
+    std::string vectors_file = "data/fashion_mnist_train_vectors.csv";
+    std::string test_labels_file = "data/fashion_mnist_test_labels.csv";
+    std::string test_vectors_file = "data/fashion_mnist_test_vectors.csv";
 
-//    labels_file = "../data/mnist_digits/train_labels.csv";
-//    vectors_file = "../data/mnist_digits/train_images.csv";
-//    test_labels_file = "../data/mnist_digits/test_labels.csv";
-//    test_vectors_file = "../data/mnist_digits/test_images.csv";
+//    labels_file = "data/mnist_digits/train_labels.csv";
+//    vectors_file = "data/mnist_digits/train_images.csv";
+//    test_labels_file = "data/mnist_digits/test_labels.csv";
+//    test_vectors_file = "data/mnist_digits/test_images.csv";
 
     std::vector<int> labels;
     std::vector<float> vectors;
@@ -68,10 +68,11 @@ void train_mnist() {
     matrix test_inputs(test_vectors, static_cast<int>(test_vectors.size() / 784), 784);
     test_inputs.normalize_data();
 
-    nn->train(inputs, labels, 60000/32, 0.001);
+    nn->train(inputs, labels, 60000/32*5, 0.001);
 
     nn->predict_to_file(test_inputs, "predictions.csv");
-    std::cout << "Accuracy: " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
+    // std::cout << "Accuracy train: " << nn->accuracy(inputs, labels) << "%" << std::endl;
+    // std::cout << "Accuracy test:  " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 }
 
 int main() {

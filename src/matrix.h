@@ -111,7 +111,6 @@ public:
     }
 
     inline void normalize_data() {
-        // TODO normalize by column
         // subtract mean and divide by standard deviation
         for (int i = 0; i < cols - 1; i++) {
             float sum = 0;
