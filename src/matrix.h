@@ -9,8 +9,11 @@
 #include <random>
 
 inline float sample_normal_dist(float mean, float stddev) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
+//    std::random_device rd;
+//    std::mt19937 gen(rd());
+//    std::mt19937 gen(seed);
+    unsigned int seed = 42;
+    std::mt19937 gen(seed);
     std::normal_distribution<> dist(mean, stddev);
     return dist(gen);
 }
