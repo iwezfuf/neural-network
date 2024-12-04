@@ -39,10 +39,10 @@ void load_dataset(const std::string& labels_file, const std::string& vectors_fil
 }
 
 void train_mnist() {
-    std::string labels_file = "../data/fashion_mnist_train_labels.csv";
-    std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
-    std::string test_labels_file = "../data/fashion_mnist_test_labels.csv";
-    std::string test_vectors_file = "../data/fashion_mnist_test_vectors.csv";
+    std::string labels_file = "data/fashion_mnist_train_labels.csv";
+    std::string vectors_file = "data/fashion_mnist_train_vectors.csv";
+    std::string test_labels_file = "data/fashion_mnist_test_labels.csv";
+    std::string test_vectors_file = "data/fashion_mnist_test_vectors.csv";
 
 //    labels_file = "data/mnist_digits/train_labels.csv";
 //    vectors_file = "data/mnist_digits/train_images.csv";
