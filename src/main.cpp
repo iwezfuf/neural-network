@@ -39,10 +39,10 @@ void load_dataset(const std::string& labels_file, const std::string& vectors_fil
 }
 
 void train_mnist() {
-    std::string labels_file = "data/fashion_mnist_train_labels.csv";
-    std::string vectors_file = "data/fashion_mnist_train_vectors.csv";
-    std::string test_labels_file = "data/fashion_mnist_test_labels.csv";
-    std::string test_vectors_file = "data/fashion_mnist_test_vectors.csv";
+    std::string labels_file = "../data/fashion_mnist_train_labels.csv";
+    std::string vectors_file = "../data/fashion_mnist_train_vectors.csv";
+    std::string test_labels_file = "../data/fashion_mnist_test_labels.csv";
+    std::string test_vectors_file = "../data/fashion_mnist_test_vectors.csv";
 
 //    labels_file = "data/mnist_digits/train_labels.csv";
 //    vectors_file = "data/mnist_digits/train_images.csv";
@@ -63,10 +63,11 @@ void train_mnist() {
     auto *nn = new neural_network({784, 256, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
 
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
-    inputs.normalize_data();
+    std::vector<std::pair<float, float>> mean_stddev = inputs.calc_mean_stddev();
+    inputs.normalize_data(mean_stddev);
 
     matrix test_inputs(test_vectors, static_cast<int>(test_vectors.size() / 784), 784);
-    test_inputs.normalize_data();
+    test_inputs.normalize_data(mean_stddev);
 
     nn->train(inputs, labels, 60000/32*5, 0.001);
 

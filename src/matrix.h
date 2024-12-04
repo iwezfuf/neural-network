@@ -8,7 +8,6 @@
 #include <cassert>
 #include <random>
 
-
 inline float sample_normal_dist(float mean, float stddev) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -110,8 +109,9 @@ public:
         return matrix_row_view(&data[row * cols], cols);
     }
 
-    inline void normalize_data() {
-        // subtract mean and divide by standard deviation
+    inline std::vector<std::pair<float, float>> calc_mean_stddev() {
+        std::vector<std::pair<float, float>> result;
+        result.reserve(cols - 1);
         for (int i = 0; i < cols - 1; i++) {
             float sum = 0;
             for (int j = 0; j < rows; j++) {
@@ -122,9 +122,16 @@ public:
             for (int j = 0; j < rows; j++) {
                 stddev += (data[index(j, i)] - mean) * (data[index(j, i)] - mean);
             }
-            stddev = sqrt(stddev / rows) + 1e-9;
+            stddev = sqrt(stddev / rows);
+            result.push_back(std::make_pair(mean, stddev));
+        }
+        return result;
+    }
+
+    inline void normalize_data(std::vector<std::pair<float, float>> mean_stddev) {
+        for (int i = 0; i < cols - 1; i++) {
             for (int j = 0; j < rows; j++) {
-                data[index(j, i)] = (data[index(j, i)] - mean) / stddev;
+                data[index(j, i)] = (data[index(j, i)] - mean_stddev[i].first) / mean_stddev[i].second;
             }
         }
     }
