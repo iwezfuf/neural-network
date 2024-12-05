@@ -69,7 +69,7 @@ void train_mnist() {
     matrix test_inputs(test_vectors, static_cast<int>(test_vectors.size() / 784), 784);
     test_inputs.normalize_data(mean_stddev);
 
-    nn->train(inputs, labels, 7, 0.001, 32);
+    nn->train(inputs, labels, 6, 0.001, 32);
 
     nn->predict_to_file(test_inputs, "predictions.csv");
     // std::cout << "Accuracy train: " << nn->accuracy(inputs, labels) << "%" << std::endl;
