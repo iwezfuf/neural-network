@@ -69,7 +69,9 @@ public:
     }
 
     inline void randomize() {
-        auto gen = std::mt19937(std::random_device("/dev/random")());
+        unsigned int seed = std::random_device("/dev/random")();
+        std::cout << "Seed used in randomize: " << seed << std::endl;
+        auto gen = std::mt19937(seed);
         // use He initialization
         for (int i = 0; i < size(); i++) {
             // leave bias at 0
