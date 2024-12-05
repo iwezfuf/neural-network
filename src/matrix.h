@@ -7,15 +7,11 @@
 #include <vector>
 #include <cassert>
 #include <random>
+#include <iostream>
 
-inline float sample_normal_dist(float mean, float stddev) {
-//    std::random_device rd;
-//    std::mt19937 gen(rd());
-//    std::mt19937 gen(seed);
-    unsigned int seed = 42;
-    std::mt19937 gen(seed);
+inline float sample_normal_dist(float mean, float stddev, std::mt19937 &gen) {
     std::normal_distribution<> dist(mean, stddev);
-    return dist(gen);
+    return static_cast<float>(dist(gen));
 }
 
 class matrix_row_view {
@@ -73,11 +69,12 @@ public:
     }
 
     inline void randomize() {
+        auto gen = std::mt19937(std::random_device("/dev/random")());
         // use He initialization
         for (int i = 0; i < size(); i++) {
             // leave bias at 0
             if ((i + 1) % cols != 0) {
-                data[i] = sample_normal_dist(0, sqrt(2.0 / cols));
+                data[i] = sample_normal_dist(0, sqrt(2.0 / cols), gen);
             }
         }
     }

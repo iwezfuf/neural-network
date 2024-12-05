@@ -86,21 +86,19 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<fl
     }
 }
 
-void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, float learning_rate) {
+void neural_network::train(const matrix &inputs, const std::vector<int> &labels, int epochs, float learning_rate, int batch_size) {
     // sort inputs and labels randomly
     std::vector<int> indices(inputs.rows);
     std::iota(indices.begin(), indices.end(), 0);
-    unsigned int seed = 42;
-//    std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device("/dev/random")()));
-    std::shuffle(indices.begin(), indices.end(), std::mt19937(seed));
+    std::shuffle(indices.begin(), indices.end(), std::mt19937(std::random_device("/dev/random")()));
+    batch_size = std::min(batch_size, inputs.rows);
 
-    for (int i = 0; i < epochs; i++) {
-        if (i % 100 == 0)
-            std::cout << "Epoch: " << i << std::endl;
+    for (int batch_num = 0; batch_num < epochs * inputs.size() / batch_size; batch_num++) {
+        if (batch_num % inputs.size() / batch_size == 0)
+            std::cout << "Epoch: " << batch_num / inputs.size() / batch_size << std::endl;
 
-        int batch_size = std::min(32, inputs.rows);
-        for (int j = 0; j < batch_size; j++) {
-            int index = indices[(i*batch_size + j) % inputs.rows];
+        for (int example_num = 0; example_num < batch_size; example_num++) {
+            int index = indices[(batch_num * batch_size + example_num) % inputs.rows];
 
             const matrix_row_view &input = inputs.get_row(index);
             std::vector<float> label(layers.back().size, 0);

@@ -21,7 +21,7 @@ public:
 
     std::vector<float>& get_outputs();
 
-    void train(const matrix &inputs, const std::vector<int> &labels, int epochs, float learning_rate);
+    void train(const matrix &inputs, const std::vector<int> &labels, int epochs, float learning_rate, int batch_size);
 
     void backward(const matrix_row_view &input, const std::vector<float> &label);
 
