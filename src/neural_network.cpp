@@ -26,14 +26,14 @@ int neural_network::predict(const matrix_row_view& input) {
     return static_cast<int>(std::max_element(get_outputs().begin(), get_outputs().end()) - get_outputs().begin());
 }
 
-int neural_network::accuracy(const matrix &inputs, const std::vector<int> &labels) {
+float neural_network::accuracy(const matrix &inputs, const std::vector<int> &labels) {
     int correct = 0;
     for (int i = 0; i < inputs.rows; i++) {
         if (predict(inputs.get_row(i)) == labels[i]) {
             correct++;
         }
     }
-    return correct * 100 / inputs.rows;
+    return (float) correct * 100 / static_cast<float>(inputs.rows);
 }
 
 void neural_network::predict_to_file(const matrix &inputs, const std::string& filename) {
@@ -95,7 +95,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
 
     for (int batch_num = 0; batch_num < epochs * inputs.rows / batch_size; batch_num++) {
         if ((batch_num % ( inputs.rows / batch_size )) == 0 && batch_num != 0)
-            std::cout << "Epoch: " << batch_num << std::endl;
+            std::cout << "Epoch: " << batch_num / ( inputs.rows / batch_size ) << std::endl;
 
         for (int example_num = 0; example_num < batch_size; example_num++) {
             int index = indices[(batch_num * batch_size + example_num) % inputs.rows];

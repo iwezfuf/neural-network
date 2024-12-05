@@ -7,11 +7,11 @@
 #include "matrix.h"
 #include "activation.h"
 
-void load_dataset(const std::string& labels_file, const std::string& vectors_file, std::vector<int> &labels, std::vector<float> &vectors) {
+int load_dataset(const std::string& labels_file, const std::string& vectors_file, std::vector<int> &labels, std::vector<float> &vectors) {
     std::ifstream labels_stream(labels_file);
     if (!labels_stream.is_open()) {
         std::cerr << "Failed to open labels file: " << labels_file << std::endl;
-        return;
+        return 1;
     }
 
     int label;
@@ -23,7 +23,7 @@ void load_dataset(const std::string& labels_file, const std::string& vectors_fil
     std::ifstream vectors_stream(vectors_file);
     if (!vectors_stream.is_open()) {
         std::cerr << "Failed to open vectors file: " << vectors_file << std::endl;
-        return;
+        return 1;
     }
 
     std::string line;
@@ -36,6 +36,7 @@ void load_dataset(const std::string& labels_file, const std::string& vectors_fil
         }
     }
     vectors_stream.close();
+    return 0;
 }
 
 void train_mnist() {
@@ -51,11 +52,13 @@ void train_mnist() {
 
     std::vector<int> labels;
     std::vector<float> vectors;
-    load_dataset(labels_file, vectors_file, labels, vectors);
+    if (load_dataset(labels_file, vectors_file, labels, vectors))
+        return;
 
     std::vector<int> test_labels;
     std::vector<float> test_vectors;
-    load_dataset(test_labels_file, test_vectors_file, test_labels, test_vectors);
+    if (load_dataset(test_labels_file, test_vectors_file, test_labels, test_vectors))
+        return;
 
     std::cout << "Loaded " << labels.size() << " labels and " << vectors.size() / 784 << " vectors." << std::endl;
     std::cout << "Loaded " << test_labels.size() << " test labels and " << test_vectors.size() / 784 << " test vectors." << std::endl;

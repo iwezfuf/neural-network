@@ -25,7 +25,7 @@ public:
 
     void backward(const matrix_row_view &input, const std::vector<float> &label);
 
-    int accuracy(const matrix &inputs, const std::vector<int> &labels);
+    float accuracy(const matrix &inputs, const std::vector<int> &labels);
 
     void predict_to_file(const matrix &inputs, const std::string& filename);
 };
