@@ -69,7 +69,14 @@ public:
     }
 
     inline void randomize() {
-        unsigned int seed = std::random_device("/dev/random")();
+        unsigned int seed = 0;
+        if (this->cols == 785)
+            seed = 58217372;
+        if (this->cols == 257)
+            seed = 168618227;
+        if (this->cols == 129)
+            seed = 940864322;
+//        unsigned int seed = std::random_device("/dev/random")();
         std::cout << "Seed used in randomize: " << seed << std::endl;
         auto gen = std::mt19937(seed);
         // use He initialization

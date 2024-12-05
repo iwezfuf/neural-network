@@ -90,7 +90,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
     // sort inputs and labels randomly
     std::vector<int> indices(inputs.rows);
     std::iota(indices.begin(), indices.end(), 0);
-    unsigned int seed = std::random_device("/dev/random")();
+    unsigned int seed = 3544858157; // std::random_device()();
     std::cout << "Seed used in train: " << seed << std::endl;
     std::shuffle(indices.begin(), indices.end(), std::mt19937(seed));
     batch_size = std::min(batch_size, inputs.rows);
