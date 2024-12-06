@@ -28,6 +28,10 @@ public:
     float accuracy(const matrix &inputs, const std::vector<int> &labels);
 
     void predict_to_file(const matrix &inputs, const std::string& filename);
+
+    bool is_any_weight_nan();
+
+    bool has_nan(std::vector<float> &vec);
 };
 
 

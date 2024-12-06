@@ -26,6 +26,8 @@ public:
     void update_weights(float learning_rate) const;
 
     void zero_weights_delta() const;
+
+    bool has_nan(std::vector<float> &vec);
 };
 
 

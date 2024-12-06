@@ -21,12 +21,15 @@ void relu_derivative(std::vector<float>& x) {
 }
 
 void softmax(std::vector<float>& x) {
+    // use numerically stable softmax
+    float max = *std::max_element(x.begin(), x.end());
     float sum = 0;
-    for (float i : x) {
-        sum += exp(i);
+    for (size_t i = 0; i < x.size(); i++) {
+        x[i] = exp(x[i] - max);
+        sum += x[i];
     }
-    for (float & i : x) {
-        i = exp(i) / sum;
+    for (size_t i = 0; i < x.size(); i++) {
+        x[i] /= sum + 1e-6;
     }
 }
 
