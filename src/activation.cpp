@@ -34,6 +34,8 @@ void softmax(std::vector<float>& x) {
 }
 
 void softmax_derivative(std::vector<float> &x) {
+    // Not the actual derivative of softmax, but it is
+    // handy to define it this way for backpropagation
     for (size_t i = 0; i < x.size(); i++) {
         x[i] = 1;
     }

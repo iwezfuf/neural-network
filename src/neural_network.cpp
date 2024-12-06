@@ -58,32 +58,16 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<fl
         if (static_cast<size_t>(i) == layers.size() - 1) {
             for (size_t j = 0; j < de_dy.size(); j++) {
                 de_dy[j] = predicted[j] - label[j];
-                if (has_nan(de_dy)) {
-                    std::cout << "NaN de_dy1 found at layer " << i << std::endl;
-                    std::exit(42);
-                }
             }
         } else {
             de_dy = compute_de_dy(de_dy, *layers[i + 1].potential_der, *layers[i + 1].weights);
-            if (has_nan(de_dy)) {
-                std::cout << "NaN de_dy2 found at layer " << i << std::endl;
-                std::exit(42);
-            }
         }
 
         // compute de_dp = de_dy * potential (elementwise_mul)
         std::vector<float> de_dp = vec_elementwise_mul(de_dy, *layer.potential_der);
-        if (has_nan(de_dp)) {
-            std::cout << "NaN de_dp found at layer " << i << std::endl;
-            std::exit(42);
-        }
 
         if (static_cast<size_t>(i) != layers.size() - 1) {
             layers[i + 1].optimizer->add_current_example_weight_gradient(*layers[i + 1].weights_delta, current_weights_delta);
-            if (has_nan(layers[i + 1].weights_delta->data)) {
-                std::cout << "NaN weights_delta found at layer " << i << std::endl;
-                std::exit(42);
-            }
         }
 
         // compute de_dw
@@ -95,10 +79,6 @@ void neural_network::backward(const matrix_row_view &input, const std::vector<fl
         }
         // outer product with 1 added to end of y_vector
         current_weights_delta = outer_product(de_dp, *y_vector);
-        if (has_nan(current_weights_delta.data)) {
-            std::cout << "NaN current_weights_delta found at layer " << i << std::endl;
-            std::exit(42);
-        }
 
         if (i == 0) {
             layer.optimizer->add_current_example_weight_gradient(*layer.weights_delta, current_weights_delta);
@@ -110,8 +90,7 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
     // sort inputs and labels randomly
     std::vector<int> indices(inputs.rows);
     std::iota(indices.begin(), indices.end(), 0);
-    unsigned int seed = std::random_device("/dev/random")(); // 993432345
-    std::cout << "Seed used in train: " << seed << std::endl;
+    unsigned int seed = 42;
     std::shuffle(indices.begin(), indices.end(), std::mt19937(seed));
     batch_size = std::min(batch_size, inputs.rows);
 
@@ -129,16 +108,8 @@ void neural_network::train(const matrix &inputs, const std::vector<int> &labels,
             forward(input);
             backward(input, label);
         }
-        if (is_any_weight_nan()) {
-            std::cout << "NaN weight found before update weights at batch " << batch_num << std::endl;
-            std::exit(42);
-        }
         for (auto& layer : layers) {
             layer.update_weights(learning_rate);
-        }
-        if (is_any_weight_nan()) {
-            std::cout << "NaN weight found after update weights at batch " << batch_num << " example " << std::endl;
-            std::exit(42);
         }
     }
 }
@@ -163,24 +134,4 @@ void neural_network::visualize() {
 
 std::vector<float> &neural_network::get_outputs() {
     return *layers[layers.size() - 1].values;
-}
-
-bool neural_network::is_any_weight_nan() {
-    for (auto& layer : layers) {
-        for (int i = 0; i < layer.weights->size(); i++) {
-            if (std::isnan(layer.weights->data[i])) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-bool neural_network::has_nan(std::vector<float> &vec) {
-    for (auto &i : vec) {
-        if (std::isnan(i)) {
-            return true;
-        }
-    }
-    return false;
 }
