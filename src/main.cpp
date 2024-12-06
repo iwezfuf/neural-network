@@ -74,7 +74,8 @@ void train_mnist() {
 
     nn->train(inputs, labels, 6, 0.001, 32);
 
-    nn->predict_to_file(test_inputs, "predictions.csv");
+    nn->predict_to_file(test_inputs, "test_predictions.csv");
+    nn->predict_to_file(inputs, "train_predictions.csv");
     // std::cout << "Accuracy train: " << nn->accuracy(inputs, labels) << "%" << std::endl;
     // std::cout << "Accuracy test:  " << nn->accuracy(test_inputs, test_labels) << "%" << std::endl;
 }
