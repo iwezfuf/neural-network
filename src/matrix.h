@@ -110,29 +110,24 @@ public:
         return matrix_row_view(&data[row * cols], cols);
     }
 
-    inline std::vector<std::pair<float, float>> calc_mean_stddev() {
-        std::vector<std::pair<float, float>> result;
-        result.reserve(cols - 1);
-        for (int i = 0; i < cols - 1; i++) {
-            float sum = 0;
-            for (int j = 0; j < rows; j++) {
-                sum += data[index(j, i)];
-            }
-            float mean = sum / rows;
-            float stddev = 0;
-            for (int j = 0; j < rows; j++) {
-                stddev += (data[index(j, i)] - mean) * (data[index(j, i)] - mean);
-            }
-            stddev = sqrt(stddev / rows);
-            result.push_back(std::make_pair(mean, stddev));
+    inline std::pair<float, float> calc_mean_stddev() {
+        float sum = 0;
+        for (int i = 0; i < size(); i++) {
+            sum += data[i];
         }
-        return result;
+        float mean = sum / static_cast<float>(size());
+        double stddev = 0;
+        for (int i = 0; i < size(); i++) {
+            stddev += (data[i] - mean) * (data[i] - mean);
+        }
+        stddev = sqrt(stddev / static_cast<double>(size()));
+        return {mean, stddev};
     }
 
-    inline void normalize_data(std::vector<std::pair<float, float>> mean_stddev) {
+    inline void normalize_data(std::pair<float, float> mean_stddev) {
         for (int i = 0; i < cols - 1; i++) {
             for (int j = 0; j < rows; j++) {
-                data[index(j, i)] = (data[index(j, i)] - mean_stddev[i].first) / mean_stddev[i].second;
+                data[index(j, i)] = (data[index(j, i)] - mean_stddev.first) / mean_stddev.second;
             }
         }
     }

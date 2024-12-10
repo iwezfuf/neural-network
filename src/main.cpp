@@ -66,7 +66,7 @@ void train_mnist() {
     auto *nn = new neural_network({784, 256, 128, 10}, {Activation::RELU, Activation::RELU, Activation::SOFTMAX});
 
     matrix inputs(vectors, static_cast<int>(vectors.size() / 784), 784);
-    std::vector<std::pair<float, float>> mean_stddev = inputs.calc_mean_stddev();
+    std::pair<float, float> mean_stddev = inputs.calc_mean_stddev();
     inputs.normalize_data(mean_stddev);
 
     matrix test_inputs(test_vectors, static_cast<int>(test_vectors.size() / 784), 784);
